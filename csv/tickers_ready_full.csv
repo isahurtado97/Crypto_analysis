@@ -1,80 +1,64 @@
 Date,Ticker,Average Price,Quantity,Invested Money,Entry,Exit,Volatility between entry and exit,No entry,No Exit,Trigger Points,Profit Target,Trade Time Expected,Results,Trade Time,Current Price,Unrealized PnL
-2025-04-24,APT-EUR,4.7336,105.629,500,4.7142,4.7529,0.82%,No,No,Frequent Levels with Direction,4.09,0 days 00:45:00,At loss,,4.6232,-9.61
-2025-04-24,ONDO-EUR,0.7779,642.7727,500,0.776,0.7797,0.48%,No,No,Frequent Levels with Direction,2.38,0 days 00:39:00,At loss,,0.7702,-3.73
-2025-04-24,BABY-EUR,0.066,7572.717,500,0.0653,0.0668,2.37%,No,No,Frequent Levels with Direction,11.36,0 days 00:52:00,At loss,,0.064941,-2.72
-2025-04-24,SUI-EUR,2.696,185.4599,500,2.6696,2.7224,1.98%,No,No,Frequent Levels with Direction,9.79,0 days 01:04:00,Profitable,,2.6706,0.19
-2025-04-24,ORDI-EUR,6.8144,73.3746,500,6.7614,6.8673,1.57%,No,No,Frequent Levels with Direction,7.77,0 days 00:49:00,At loss,,6.7071,-3.98
-2025-04-24,DBR-EUR,0.0136,36774.1698,500,0.0135,0.0137,1.8%,No,No,Frequent Levels with Direction,7.35,0 days 00:42:00,At loss,,0.01345,-1.84
-2025-04-24,TRB-EUR,25.2925,19.7687,500,25.015,25.57,2.22%,No,No,Frequent Levels with Direction,10.97,0 days 02:44:00,At loss,,24.527,-9.65
-2025-04-24,RUNE-EUR,1.1387,439.1165,500,1.1366,1.1407,0.36%,No,No,Frequent Levels with Direction,1.8,0 days 01:32:00,At loss,,1.1242,-5.45
-2025-04-24,VRA-EUR,0.0014,362555.2897,500,0.0014,0.0014,3.15%,No,No,Frequent Levels with Direction,0.0,0 days 01:19:00,At loss,,0.0013046,-34.59
-2025-04-24,RENDER-EUR,3.8294,130.5688,500,3.8198,3.839,0.5%,No,No,Frequent Levels with Direction,2.51,0 days 01:24:00,At loss,,3.796,-3.11
-2025-04-24,ALT-EUR,0.0271,18473.3614,500,0.0267,0.0275,2.92%,No,No,Frequent Levels with Direction,14.78,0 days 07:44:00,At loss,,0.02628,-7.76
-2025-04-24,IP-EUR,3.2848,152.214,500,3.2661,3.3036,1.15%,No,No,Frequent Levels with Direction,5.71,0 days 02:26:00,At loss,,3.2327,-5.08
-2025-04-24,USDC-EUR,0.8817,567.0831,500,0.8808,0.8826,0.2%,No,No,Frequent Levels with Direction,1.02,0 days 03:43:00,At loss,,0.87917,-0.92
-2025-04-24,IQ-EUR,0.0038,131559.9058,500,0.0038,0.0038,2.35%,No,No,Frequent Levels with Direction,0.0,0 days 10:52:00,At loss,,0.0037638,-4.76
+2025-04-24,AUCTION-EUR,10.3565,48.2789,500,10.253,10.46,2.02%,No,No,Frequent Levels with Direction,9.99,0 days 02:08:00,Profitable,,10.289,1.74
+2025-04-24,CRV-EUR,0.5926,843.7252,500,0.5875,0.5977,1.73%,No,No,Frequent Levels with Direction,8.61,0 days 00:30:00,At loss,,0.58529,-1.86
+2025-04-24,DBR-EUR,0.0136,36630.0366,500,0.0136,0.0137,1.0%,No,No,Frequent Levels with Direction,3.66,0 days 00:29:00,At loss,,0.01345,-5.49
+2025-04-24,TRB-EUR,25.256,19.7973,500,24.942,25.57,2.52%,No,No,Frequent Levels with Direction,12.43,0 days 01:33:00,At loss,,24.629,-6.2
+2025-04-24,RUNE-EUR,1.1398,438.6735,500,1.1296,1.15,1.81%,No,No,Frequent Levels with Direction,8.95,0 days 01:50:00,At loss,,1.1217,-3.47
+2025-04-24,VRA-EUR,0.0014,362555.2897,500,0.0014,0.0014,3.15%,No,No,Frequent Levels with Direction,0.0,0 days 01:19:00,At loss,,0.001285,-41.69
+2025-04-24,IP-EUR,3.2848,152.214,500,3.2661,3.3036,1.15%,No,No,Frequent Levels with Direction,5.71,0 days 02:26:00,At loss,,3.233,-5.04
+2025-04-24,USDC-EUR,0.8814,567.2761,500,0.8808,0.882,0.14%,No,No,Frequent Levels with Direction,0.68,0 days 02:57:00,At loss,,0.87871,-1.19
 2025-04-24,QKC-EUR,0.0069,72380.8972,500,0.0069,0.0069,0.32%,No,No,Frequent Levels with Direction,0.0,3 days 08:27:00,At loss,,0.0068669,-2.4
 2025-04-24,MKR-EUR,1305.45,0.383,500,1297.5,1313.4,1.23%,No,No,Frequent Levels with Direction,6.09,0 days 07:36:00,Profitable,,1301.0,1.34
-2025-04-24,XVG-EUR,0.0045,112051.0953,500,0.0044,0.0045,2.97%,No,No,Frequent Levels with Direction,11.21,0 days 02:01:00,At loss,,0.0042668,-14.93
+2025-04-24,CAKE-EUR,1.7586,284.3252,500,1.7277,1.7894,3.57%,No,No,Frequent Levels with Direction,17.54,0 days 06:34:00,At loss,,1.72,-2.19
+2025-04-24,RPL-EUR,3.9466,126.6913,500,3.8793,4.0139,3.47%,No,No,Frequent Levels with Direction,17.05,0 days 08:37:00,At loss,,3.8197,-7.55
+2025-04-24,DOT-EUR,3.5276,141.7374,500,3.51,3.5453,1.01%,No,No,Frequent Levels with Direction,5.0,0 days 02:22:00,At loss,,3.4974,-1.79
 2025-04-24,RARE-EUR,0.0548,9131.4194,500,0.0533,0.0562,5.44%,No,No,Frequent Levels with Direction,26.48,0 days 07:03:00,At loss,,0.05232,-8.95
-2025-04-24,CFG-EUR,0.1296,3856.9831,500,0.128,0.1313,2.55%,No,No,Frequent Levels with Direction,12.73,0 days 08:23:00,At loss,,0.125,-11.57
-2025-04-24,JUP-EUR,0.3834,1304.138,500,0.3806,0.3862,1.46%,No,No,Frequent Levels with Direction,7.3,0 days 02:31:00,At loss,,0.37879,-2.36
-2025-04-24,CLV-EUR,0.0238,21014.1425,500,0.0237,0.0239,1.15%,No,No,Frequent Levels with Direction,4.2,0 days 03:34:00,At loss,,0.023353,-7.29
-2025-04-24,DOGE-USDC,0.1775,2817.0601,500,0.1758,0.1792,1.91%,No,No,Frequent Levels with Direction,9.58,0 days 03:47:00,At loss,,0.17351,-6.45
-2025-04-24,GAS-EUR,3.0207,165.5245,500,2.9866,3.0548,2.28%,No,No,Frequent Levels with Direction,11.29,0 days 01:02:00,At loss,,2.9813,-0.88
-2025-04-24,COTI-EUR,0.0658,7602.1347,500,0.0653,0.0662,1.32%,No,No,Frequent Levels with Direction,6.84,0 days 02:41:00,At loss,,0.064341,-7.29
-2025-04-24,ENS-EUR,14.8545,33.6598,500,14.765,14.944,1.21%,No,No,Frequent Levels with Direction,6.03,0 days 03:46:00,At loss,,14.605,-5.39
-2025-04-24,MIOTA-EUR,0.1686,2964.8077,500,0.1672,0.1701,1.74%,No,No,Frequent Levels with Direction,8.6,0 days 01:24:00,At loss,,0.16574,-4.33
-2025-04-24,BCH-EUR,318.36,1.5705,500,315.44,321.28,1.85%,No,No,Frequent Levels with Direction,9.17,0 days 06:39:00,Break-even,,315.44,0.0
-2025-04-24,ROSE-EUR,0.0251,19900.1015,500,0.025,0.0253,1.3%,No,No,Frequent Levels with Direction,5.97,0 days 01:51:00,At loss,,0.024284,-14.25
-2025-04-24,ICX-EUR,0.0921,5427.4379,500,0.0917,0.0925,0.93%,No,No,Frequent Levels with Direction,4.34,0 days 02:21:00,At loss,,0.089918,-9.67
-2025-04-24,BNB-EUR,532.805,0.9384,500,532.08,533.53,0.27%,No,No,Frequent Levels with Direction,1.36,0 days 01:00:00,At loss,,530.58,-1.41
+2025-04-24,CFG-EUR,0.1292,3869.969,500,0.1271,0.1313,3.26%,No,No,Frequent Levels with Direction,16.25,0 days 06:35:00,At loss,,0.12481,-8.86
+2025-04-24,JUP-EUR,0.3833,1304.4953,500,0.3806,0.386,1.4%,No,No,Frequent Levels with Direction,7.04,0 days 01:51:00,At loss,,0.37866,-2.53
+2025-04-24,CLV-EUR,0.0236,21177.4672,500,0.0233,0.0239,2.75%,No,No,Frequent Levels with Direction,12.71,0 days 01:15:00,At loss,,0.022643,-13.91
+2025-04-24,COTI-EUR,0.0658,7602.1347,500,0.0653,0.0662,1.32%,No,No,Frequent Levels with Direction,6.84,0 days 02:41:00,At loss,,0.06436,-7.15
+2025-04-24,ENS-EUR,14.86,33.6474,500,14.765,14.955,1.29%,No,No,Frequent Levels with Direction,6.39,0 days 04:31:00,At loss,,14.509,-8.61
+2025-04-24,MIOTA-EUR,0.1686,2964.8077,500,0.1672,0.1701,1.74%,No,No,Frequent Levels with Direction,8.6,0 days 01:24:00,At loss,,0.16673,-1.39
+2025-04-24,INJ-EUR,8.2399,60.6803,500,8.2198,8.26,0.49%,No,No,Frequent Levels with Direction,2.44,0 days 01:28:00,At loss,,8.0786,-8.57
+2025-04-24,BEL-EUR,0.3404,1469.076,500,0.3369,0.3438,2.05%,No,No,Frequent Levels with Direction,10.14,0 days 01:53:00,At loss,,0.33477,-3.13
+2025-04-24,ZEUS-EUR,0.2526,1979.0224,500,0.2469,0.2584,4.68%,No,No,Frequent Levels with Direction,22.76,0 days 06:52:00,At loss,,0.24679,-0.22
+2025-04-24,OGN-EUR,0.0523,9564.1612,500,0.0513,0.0532,3.63%,No,No,Frequent Levels with Direction,18.17,0 days 15:45:00,Profitable,,0.051369,0.66
+2025-04-24,BNB-EUR,532.805,0.9384,500,532.08,533.53,0.27%,No,No,Frequent Levels with Direction,1.36,0 days 01:00:00,At loss,,530.0,-1.95
 2025-04-24,ZRC-EUR,0.0347,14389.1103,500,0.0344,0.0351,2.07%,No,No,Frequent Levels with Direction,10.07,0 days 06:28:00,Profitable,,0.034464,0.92
 2025-04-24,ELX-EUR,0.0975,5130.2309,500,0.097,0.0979,0.99%,No,No,Frequent Levels with Direction,4.62,0 days 02:24:00,At loss,,0.096211,-4.05
-2025-04-24,TURBO-EUR,0.0037,135538.0862,500,0.0037,0.0037,1.49%,No,No,Frequent Levels with Direction,0.0,0 days 00:40:00,At loss,,0.0036867,-1.8
-2025-04-24,PYTH-EUR,0.1334,3748.4069,500,0.132,0.1348,2.15%,No,No,Frequent Levels with Direction,10.5,0 days 03:11:00,At loss,,0.13158,-1.57
-2025-04-24,KAS-EUR,0.0844,5927.0499,500,0.0839,0.0848,1.06%,No,No,Frequent Levels with Direction,5.33,0 days 02:47:00,Profitable,,0.084138,1.41
-2025-04-24,ETHFI-EUR,0.5039,992.3391,500,0.497,0.5108,2.78%,No,No,Frequent Levels with Direction,13.69,0 days 06:04:00,Profitable,,0.49943,2.41
-2025-04-24,HEI-EUR,0.3048,1640.6622,500,0.2977,0.3119,4.77%,No,No,Frequent Levels with Direction,23.3,1 days 19:29:00,At loss,,0.28811,-15.73
-2025-04-24,VIRTUAL-EUR,0.6122,816.6865,500,0.6059,0.6185,2.08%,No,No,Frequent Levels with Direction,10.29,0 days 02:11:00,At loss,,0.60522,-0.56
-2025-04-24,WOO-EUR,0.0624,8007.7515,500,0.0609,0.0639,4.91%,No,No,Frequent Levels with Direction,24.02,0 days 05:32:00,At loss,,0.059859,-8.34
+2025-04-24,ZEN-EUR,8.498,58.8377,500,8.4216,8.5743,1.81%,No,No,Frequent Levels with Direction,8.98,0 days 00:11:00,At loss,,8.2268,-11.46
+2025-04-24,KAS-EUR,0.0844,5927.0499,500,0.0839,0.0848,1.06%,No,No,Frequent Levels with Direction,5.33,0 days 02:47:00,Profitable,,0.083985,0.5
+2025-04-24,VELO-EUR,0.0126,39640.0682,500,0.0125,0.0127,1.82%,No,No,Frequent Levels with Direction,7.93,0 days 07:20:00,At loss,,0.01219,-12.29
+2025-04-24,HEI-EUR,0.3048,1640.6622,500,0.2977,0.3119,4.77%,No,No,Frequent Levels with Direction,23.3,1 days 19:29:00,At loss,,0.29016,-12.37
 2025-04-24,ZRO-EUR,2.4023,208.1339,500,2.3754,2.4292,2.26%,No,No,Frequent Levels with Direction,11.2,0 days 14:19:00,Profitable,,2.387,2.41
-2025-04-24,HBAR-EUR,0.1573,3177.7305,500,0.1557,0.159,2.06%,No,No,Frequent Levels with Direction,10.49,0 days 01:50:00,Break-even,,0.1557,0.0
-2025-04-24,KAITO-EUR,0.7759,644.4462,500,0.7682,0.7835,1.99%,No,No,Frequent Levels with Direction,9.86,0 days 01:54:00,Profitable,,0.76844,0.15
-2025-04-24,MANA-EUR,0.2772,1803.947,500,0.2716,0.2828,4.12%,No,No,Frequent Levels with Direction,20.2,0 days 03:55:00,Profitable,,0.27211,0.92
-2025-04-24,SEI-EUR,0.1686,2965.687,500,0.1669,0.1703,1.98%,No,No,Frequent Levels with Direction,10.08,0 days 03:24:00,Profitable,,0.16704,0.42
-2025-04-24,MOODENG-EUR,0.0321,15570.7457,500,0.0316,0.0326,3.39%,No,No,Frequent Levels with Direction,15.57,0 days 00:56:00,At loss,,0.03154,-0.93
-2025-04-24,HIFI-EUR,0.1903,2627.4994,500,0.1863,0.1942,4.24%,No,No,Frequent Levels with Direction,20.76,0 days 01:05:00,Profitable,,0.18642,0.32
-2025-04-24,AERGO-EUR,0.1753,2851.9279,500,0.174,0.1766,1.53%,No,No,Frequent Levels with Direction,7.42,0 days 00:58:00,Profitable,,0.1741,0.29
-2025-04-24,ANIME-EUR,0.0156,32020.4931,500,0.0154,0.0158,2.91%,No,No,Frequent Levels with Direction,12.81,0 days 10:02:00,Profitable,,0.015473,2.34
-2025-04-24,XTZ-EUR,0.4741,1054.5742,500,0.4709,0.4773,1.35%,No,No,Frequent Levels with Direction,6.75,0 days 06:55:00,At loss,,0.46499,-6.23
-2025-04-24,XLM-EUR,0.2318,2156.8923,500,0.2313,0.2323,0.44%,No,No,Frequent Levels with Direction,2.16,0 days 01:27:00,At loss,,0.2299,-3.02
-2025-04-24,FET-EUR,0.5488,911.0953,500,0.5462,0.5514,0.96%,No,No,Frequent Levels with Direction,4.74,0 days 01:28:00,At loss,,0.54088,-4.85
+2025-04-24,KAITO-EUR,0.7759,644.4462,500,0.7682,0.7835,1.99%,No,No,Frequent Levels with Direction,9.86,0 days 01:54:00,At loss,,0.766,-1.42
+2025-04-24,SEI-EUR,0.1686,2965.687,500,0.1669,0.1703,1.98%,No,No,Frequent Levels with Direction,10.08,0 days 03:24:00,At loss,,0.16652,-1.13
+2025-04-24,ANIME-EUR,0.0156,32020.4931,500,0.0154,0.0158,2.91%,No,No,Frequent Levels with Direction,12.81,0 days 10:02:00,At loss,,0.01526,-4.48
+2025-04-24,XTZ-EUR,0.4751,1052.5097,500,0.4728,0.4773,0.95%,No,No,Frequent Levels with Direction,4.74,0 days 05:49:00,At loss,,0.46326,-10.04
+2025-04-24,XLM-EUR,0.231,2164.0806,500,0.2298,0.2323,1.11%,No,No,Frequent Levels with Direction,5.41,0 days 01:17:00,Profitable,,0.22983,0.06
+2025-04-24,AEVO-EUR,0.0954,5240.5134,500,0.0933,0.0975,4.46%,No,No,Frequent Levels with Direction,22.01,0 days 02:55:00,At loss,,0.092539,-3.99
+2025-04-24,ZETA-EUR,0.231,2164.5022,500,0.2291,0.2329,1.69%,No,No,Frequent Levels with Direction,8.23,0 days 03:42:00,At loss,,0.22293,-13.35
 2025-04-24,ARKM-EUR,0.4835,1034.062,500,0.479,0.4881,1.89%,No,No,Frequent Levels with Direction,9.41,0 days 02:07:00,At loss,,0.46413,-15.38
-2025-04-24,POPCAT-EUR,0.2917,1713.8842,500,0.2882,0.2953,2.49%,No,No,Frequent Levels with Direction,12.17,0 days 01:02:00,At loss,,0.2835,-8.06
-2025-04-24,AKT-EUR,1.058,472.5898,500,1.0422,1.0738,3.03%,No,No,Frequent Levels with Direction,14.93,0 days 15:06:00,At loss,,1.0176,-11.63
+2025-04-24,POPCAT-EUR,0.2878,1737.4081,500,0.282,0.2936,4.1%,No,No,Frequent Levels with Direction,20.15,0 days 02:03:00,Profitable,,0.28256,0.97
+2025-04-24,AKT-EUR,1.0574,472.8803,500,1.0409,1.0738,3.16%,No,No,Frequent Levels with Direction,15.56,0 days 15:05:00,At loss,,1.0168,-11.4
 2025-04-24,ACE-EUR,0.5431,920.6153,500,0.535,0.5512,3.03%,No,No,Frequent Levels with Direction,14.91,0 days 07:42:00,At loss,,0.52715,-7.23
-2025-04-24,ARB-EUR,0.2941,1700.3911,500,0.293,0.2951,0.74%,No,No,Frequent Levels with Direction,3.57,0 days 02:33:00,At loss,,0.28928,-6.33
-2025-04-24,PARTI-EUR,0.1581,3161.7554,500,0.1563,0.16,2.38%,No,No,Frequent Levels with Direction,11.7,0 days 12:56:00,At loss,,0.15384,-7.78
-2025-04-24,RSR-EUR,0.0074,67554.3306,500,0.0074,0.0074,0.68%,No,No,Frequent Levels with Direction,0.0,0 days 01:03:00,At loss,,0.007227,-11.69
-2025-04-24,ATH-EUR,0.0258,19385.4803,500,0.0254,0.0262,2.82%,No,No,Frequent Levels with Direction,15.51,0 days 14:51:00,At loss,,0.02517,-4.46
+2025-04-24,ARB-EUR,0.2939,1701.1432,500,0.293,0.2949,0.65%,No,No,Frequent Levels with Direction,3.23,0 days 02:02:00,At loss,,0.28949,-5.97
+2025-04-24,PARTI-EUR,0.1581,3163.4558,500,0.1561,0.16,2.49%,No,No,Frequent Levels with Direction,12.34,0 days 12:10:00,At loss,,0.15383,-7.18
+2025-04-24,NMR-EUR,8.0268,62.2909,500,7.9348,8.1189,2.32%,No,No,Frequent Levels with Direction,11.47,0 days 00:24:00,At loss,,7.8823,-3.27
+2025-04-24,ATH-EUR,0.0258,19399.3947,500,0.0255,0.026,1.77%,No,No,Frequent Levels with Direction,9.7,0 days 09:55:00,At loss,,0.025133,-7.12
 2025-04-24,XYO-EUR,0.0094,53255.5093,500,0.0093,0.0095,2.54%,No,No,Frequent Levels with Direction,10.65,0 days 01:27:00,At loss,,0.0092307,-3.69
-2025-04-24,GOAT-EUR,0.0558,8958.6469,500,0.055,0.0566,3.05%,No,No,Frequent Levels with Direction,14.33,0 days 02:23:00,At loss,,0.054549,-4.04
-2025-04-24,NIL-EUR,0.3382,1478.3277,500,0.3327,0.3438,3.34%,No,No,Frequent Levels with Direction,16.41,0 days 08:46:00,At loss,,0.33242,-0.41
-2025-04-24,NEAR-EUR,2.1209,235.7434,500,2.1071,2.1348,1.31%,No,No,Frequent Levels with Direction,6.53,0 days 01:53:00,At loss,,2.1006,-1.53
-2025-04-24,KSM-EUR,13.5425,36.9208,500,13.447,13.638,1.42%,No,No,Frequent Levels with Direction,7.05,0 days 01:11:00,At loss,,13.3,-5.43
-2025-04-24,SYRUP-EUR,0.1551,3224.5582,500,0.154,0.1561,1.34%,No,No,Frequent Levels with Direction,6.77,0 days 10:02:00,At loss,,0.15326,-2.39
-2025-04-24,LINK-USDC,14.8475,33.6757,500,14.61,15.085,3.25%,No,No,Frequent Levels with Direction,16.0,0 days 06:05:00,At loss,,14.307,-10.2
-2025-04-24,TIA-EUR,2.4616,203.1199,500,2.4438,2.4794,1.46%,No,No,Frequent Levels with Direction,7.23,0 days 01:19:00,At loss,,2.4145,-5.95
-2025-04-24,LTO-EUR,0.0334,14973.6464,500,0.0328,0.034,3.8%,No,No,Frequent Levels with Direction,17.97,0 days 00:13:00,At loss,,0.031679,-16.79
-2025-04-24,FUEL-EUR,0.0094,52959.65,500,0.0093,0.0096,3.13%,No,No,Frequent Levels with Direction,15.89,0 days 02:50:00,At loss,,0.0092315,-3.63
-2025-04-24,EIGEN-EUR,0.829,603.1254,500,0.8193,0.8387,2.36%,No,No,Frequent Levels with Direction,11.7,0 days 01:28:00,At loss,,0.81029,-5.43
+2025-04-24,GOAT-EUR,0.0558,8958.6469,500,0.055,0.0566,3.05%,No,No,Frequent Levels with Direction,14.33,0 days 02:23:00,At loss,,0.05417,-7.44
+2025-04-24,NEAR-EUR,2.1156,236.3396,500,2.1071,2.1241,0.81%,No,No,Frequent Levels with Direction,4.02,0 days 01:25:00,At loss,,2.1051,-0.47
+2025-04-24,ALGO-EUR,0.1862,2685.2125,500,0.1854,0.187,0.86%,No,No,Frequent Levels with Direction,4.3,0 days 01:36:00,At loss,,0.18405,-3.63
+2025-04-24,SAGA-EUR,0.2377,2103.8016,500,0.2317,0.2436,5.15%,No,No,Frequent Levels with Direction,25.04,0 days 07:18:00,Profitable,,0.23272,2.15
+2025-04-24,KSM-EUR,13.5425,36.9208,500,13.447,13.638,1.42%,No,No,Frequent Levels with Direction,7.05,0 days 01:11:00,At loss,,13.286,-5.94
+2025-04-24,SYRUP-EUR,0.1553,3218.746,500,0.1543,0.1564,1.35%,No,No,Frequent Levels with Direction,6.76,0 days 10:41:00,At loss,,0.15326,-3.35
+2025-04-24,LTO-EUR,0.0334,14973.6464,500,0.0328,0.034,3.8%,No,No,Frequent Levels with Direction,17.97,0 days 00:13:00,At loss,,0.031968,-12.46
 2025-04-24,FLR-EUR,0.0147,33995.1047,500,0.0145,0.0149,2.9%,No,No,Frequent Levels with Direction,13.6,0 days 04:05:00,Profitable,,0.014503,0.1
-2025-04-24,GMT-EUR,0.0504,9927.2334,500,0.0502,0.0505,0.68%,No,No,Frequent Levels with Direction,2.98,0 days 01:36:00,At loss,,0.048508,-16.8
+2025-04-24,WAL-EUR,0.4585,1090.4531,500,0.4541,0.4629,1.93%,No,No,Frequent Levels with Direction,9.6,0 days 02:47:00,At loss,,0.45271,-1.52
+2025-04-24,NEO-EUR,5.3595,93.2923,500,5.295,5.424,2.44%,No,No,Frequent Levels with Direction,12.03,0 days 04:39:00,At loss,,5.2368,-5.43
 2025-04-24,OSMO-EUR,0.2148,2327.4217,500,0.2118,0.2179,2.91%,No,No,Frequent Levels with Direction,14.2,0 days 03:50:00,At loss,,0.20744,-10.15
 2025-04-24,RED-EUR,0.3488,1433.5273,500,0.3468,0.3508,1.16%,No,No,Frequent Levels with Direction,5.73,0 days 04:13:00,Profitable,,0.34708,0.4
-2025-04-24,MOVE-EUR,0.2147,2329.2649,500,0.2086,0.2208,5.85%,No,No,Frequent Levels with Direction,28.42,0 days 01:06:00,At loss,,0.20142,-16.72
-2025-04-24,WCT-EUR,0.341,1466.2757,500,0.3396,0.3424,0.82%,No,No,Frequent Levels with Direction,4.11,0 days 02:19:00,At loss,,0.33952,-0.12
-2025-04-24,SNX-EUR,0.635,787.4574,500,0.6205,0.6494,4.66%,No,No,Frequent Levels with Direction,22.76,0 days 16:54:00,At loss,,0.61166,-6.96
-2025-04-24,ENA-EUR,0.297,1683.445,500,0.2934,0.3006,2.48%,No,No,Frequent Levels with Direction,12.12,0 days 01:40:00,Profitable,,0.29367,0.45
-2025-04-24,SYN-EUR,0.2416,2069.6221,500,0.2374,0.2458,3.5%,No,No,Frequent Levels with Direction,17.38,0 days 01:16:00,At loss,,0.22159,-32.72
+2025-04-24,CRO-EUR,0.0793,6307.3973,500,0.0786,0.0799,1.71%,No,No,Frequent Levels with Direction,8.2,0 days 02:27:00,At loss,,0.078142,-2.89
+2025-04-24,SNX-EUR,0.6345,788.0221,500,0.6196,0.6494,4.81%,No,No,Frequent Levels with Direction,23.48,0 days 16:49:00,At loss,,0.61321,-5.04
+2025-04-24,ENA-EUR,0.297,1683.445,500,0.2934,0.3006,2.48%,No,No,Frequent Levels with Direction,12.12,0 days 01:40:00,At loss,,0.28839,-8.43
