@@ -5,6 +5,7 @@ import time
 import threading
 from datetime import datetime
 import plotly.graph_objects as go
+import pytz  
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
