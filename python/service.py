@@ -35,7 +35,7 @@ if "scheduler_started" not in st.session_state:
 
 # --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
-st.markdown("<h1 style='text-align: center; color: #00BFA6;'>📈 Crypto Trade Entry Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #00BFA6;'>📈 Crypto Entry-Exit Dashboard</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>Automatic + Manual analysis of crypto trade signals</p>", unsafe_allow_html=True)
 st.markdown("---")
 
