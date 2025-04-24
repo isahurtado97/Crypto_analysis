@@ -37,6 +37,7 @@ if "scheduler_started" not in st.session_state:
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
 st.markdown("<h1 style='text-align: center; color: #00BFA6;'>📈 Crypto Entry-Exit Dashboard</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>AI analysis of crypto trade signals</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- Manual EXECUTION buttons ---
