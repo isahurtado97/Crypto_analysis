@@ -3,3 +3,4 @@ pandas
 plotly
 schedule
 requests
+numpy
