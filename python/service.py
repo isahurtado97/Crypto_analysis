@@ -16,18 +16,18 @@ def background_scheduler():
         except Exception as e:
             print("❌ Error during analysis:", e)
 
-        # Run prediction every 4 hours (with a time window)
+        # Run prediction every 4 hours (within a time window)
         now = int(time.time())
-        if now % (4 * 60 * 60) < 900:  # within a 15-min window
+        if now % (4 * 60 * 60) < 900:  # 15-min window
             print("🔁 Running 4-hour prediction check...")
             try:
                 exec(open("python/check_prediction.py").read())
             except Exception as e:
                 print("❌ Error during prediction check:", e)
 
-        time.sleep(900)  # Wait 15 minutes
+        time.sleep(900)  # 15 minutes
 
-# --- Start scheduler only once per Streamlit session ---
+# --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
     threading.Thread(target=background_scheduler, daemon=True).start()
     st.session_state.scheduler_started = True
@@ -35,7 +35,30 @@ if "scheduler_started" not in st.session_state:
 # --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
 st.markdown("<h1 style='text-align: center; color: #00BFA6;'>📈 Crypto Trade Entry Dashboard</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: gray;'>Auto-analysis of frequent level signals + direction every 15 min</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Automatic + Manual analysis of crypto trade signals</p>", unsafe_allow_html=True)
+st.markdown("---")
+
+# --- Manual EXECUTION buttons ---
+col_a, col_b = st.columns(2)
+if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
+    with st.spinner("Running analysis..."):
+        try:
+            exec(open("python/technical_analysis.py").read())
+            exec(open("python/check_entry.py").read())
+            st.success("✅ Analysis completed successfully.")
+            st.cache_data.clear()
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
+if col_b.button("📊 Run 24h Prediction Check Now"):
+    with st.spinner("Running prediction check..."):
+        try:
+            exec(open("python/check_prediction.py").read())
+            st.success("✅ Prediction check completed.")
+            st.cache_data.clear()
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
 st.markdown("---")
 
 # --- DATA LOADERS ---
@@ -48,15 +71,12 @@ def load_checked_data():
     path = "csv/tickers_ready_24h_checked.csv"
     return pd.read_csv(path) if os.path.exists(path) else None
 
-# Manual reload
-if st.sidebar.button("🔄 Force data refresh"):
-    st.cache_data.clear()
-
-# --- MAIN DATA ---
+# --- MAIN LOGIC ---
 file_path = "csv/tickers_ready_full.csv"
 
 if not os.path.exists(file_path):
-    st.warning("⚠️ File `tickers_ready_full.csv` not found. Run the analysis first.")
+    st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
+    st.stop()
 else:
     df = load_main_data()
 
@@ -77,7 +97,7 @@ else:
         subset=["Results"]
     ))
 
-    # --- Export ---
+    # --- Export Button ---
     st.markdown("### 💾 Export Filtered CSV")
     csv_export = filtered_df.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -102,7 +122,7 @@ else:
         except:
             col3.metric("Max Volatility", "Error", "⚠️")
 
-    # --- Details of single ticker ---
+    # --- Ticker Details ---
     if len(tickers) == 1:
         st.markdown("---")
         st.subheader(f"🔎 Details for `{tickers[0]}`")
@@ -126,7 +146,7 @@ else:
         fig.update_layout(height=350, margin=dict(l=100, r=40, t=40, b=40))
         st.plotly_chart(fig, use_container_width=True)
 
-    # --- Prediction Results ---
+    # --- Prediction Check Results ---
     checked_df = load_checked_data()
     if checked_df is not None:
         st.markdown("---")
