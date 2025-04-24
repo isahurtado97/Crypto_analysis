@@ -1,0 +1,53 @@
+Date,Ticker,Average Price,Quantity,Invested Money,Entry,Exit,Volatility between entry and exit,No entry,No Exit,Trigger Points,Profit Target,Trade Time Expected,Results,Trade Time,Current Price,Unrealized PnL
+2025-04-24,POLYX-EUR,0.1414,3536.318,500,0.1394,0.1434,2.91%,No,No,Frequent Levels with Direction,14.15,0 days 12:28:00,Trade executed successfully,-1 days +14:16:00,0.13564,-13.3
+2025-04-24,APT-EUR,4.7336,105.629,500,4.7142,4.7529,0.82%,No,No,Frequent Levels with Direction,4.09,0 days 00:45:00,Trade executed successfully,-1 days +20:53:00,4.6731,-4.34
+2025-04-24,BABY-EUR,0.0664,7527.3997,500,0.066,0.0668,1.14%,No,No,Frequent Levels with Direction,6.02,0 days 01:39:00,Trade executed successfully,-1 days +22:42:00,0.066118,0.89
+2025-04-24,ORDI-EUR,6.8136,73.3821,500,6.76,6.8673,1.59%,No,No,Frequent Levels with Direction,7.87,0 days 02:27:00,Trade executed successfully,-1 days +19:07:00,6.7071,-3.88
+2025-04-24,PNUT-EUR,0.1463,3417.7518,500,0.141,0.1516,7.51%,No,No,Frequent Levels with Direction,36.23,0 days 03:44:00,Trade executed successfully,-1 days +18:57:00,0.13819,-9.6
+2025-04-24,TRB-EUR,25.237,19.8122,500,24.904,25.57,2.67%,No,No,Frequent Levels with Direction,13.19,0 days 03:37:00,Trade executed successfully,-1 days +18:38:00,24.877,-0.53
+2025-04-24,VRA-EUR,0.0014,358731.5253,500,0.0014,0.0014,0.97%,No,No,Frequent Levels with Direction,0.0,0 days 02:03:00,Trade executed successfully,-1 days +21:23:00,0.001312,-31.57
+2025-04-24,IP-EUR,3.2848,152.214,500,3.2661,3.3036,1.15%,No,No,Frequent Levels with Direction,5.71,0 days 02:26:00,Trade executed successfully,-1 days +21:15:00,3.2719,0.88
+2025-04-24,IQ-EUR,0.0038,131392.2321,500,0.0038,0.0038,2.08%,No,No,Frequent Levels with Direction,0.0,0 days 11:42:00,Trade executed successfully,-1 days +22:00:00,0.0037821,-2.35
+2025-04-24,QKC-EUR,0.0069,72380.8972,500,0.0069,0.0069,0.32%,No,No,Frequent Levels with Direction,0.0,3 days 08:27:00,Trade executed successfully,-1 days +22:35:00,0.0068669,-2.4
+2025-04-24,MKR-EUR,1301.05,0.3843,500,1297.5,1304.6,0.55%,No,No,Frequent Levels with Direction,2.73,0 days 02:44:00,Trade executed successfully,-1 days +23:01:00,1294.5,-1.15
+2025-04-24,XVG-EUR,0.0045,112051.0953,500,0.0044,0.0045,2.97%,No,No,Frequent Levels with Direction,11.21,0 days 02:01:00,Trade executed successfully,-1 days +19:54:00,0.0043881,-1.33
+2025-04-24,CAKE-EUR,1.7586,284.3252,500,1.7277,1.7894,3.57%,No,No,Frequent Levels with Direction,17.54,0 days 06:34:00,Trade executed successfully,-1 days +21:45:00,1.7327,1.42
+2025-04-24,CFG-EUR,0.1291,3871.917,500,0.127,0.1313,3.36%,No,No,Frequent Levels with Direction,16.65,0 days 14:13:00,Trade executed successfully,-1 days +11:02:00,0.12596,-4.03
+2025-04-24,SOL-EUR,130.735,3.8245,500,130.44,131.03,0.45%,No,No,Frequent Levels with Direction,2.26,0 days 00:26:00,Trade executed successfully,-1 days +23:39:00,131.04,2.29
+2025-04-24,BCH-EUR,318.29,1.5709,500,315.44,321.14,1.81%,No,No,Frequent Levels with Direction,8.95,0 days 05:04:00,Trade executed successfully,-1 days +18:49:00,316.68,1.95
+2025-04-24,WELL-EUR,0.023,21738.6579,500,0.0227,0.0233,2.32%,No,No,Frequent Levels with Direction,13.04,0 days 03:12:00,Trade executed successfully,-1 days +14:05:00,0.022394,-6.65
+2025-04-24,ROSE-EUR,0.0253,19757.3794,500,0.025,0.0257,2.76%,No,No,Frequent Levels with Direction,13.83,0 days 02:48:00,Trade executed successfully,-1 days +09:01:00,0.024787,-4.21
+2025-04-24,PEOPLE-EUR,0.0131,38232.1456,500,0.0127,0.0135,6.1%,No,No,Frequent Levels with Direction,30.59,0 days 02:02:00,Trade executed successfully,-1 days +19:13:00,0.012616,-3.21
+2025-04-24,ICX-EUR,0.0921,5427.4379,500,0.0917,0.0925,0.93%,No,No,Frequent Levels with Direction,4.34,0 days 02:21:00,Trade executed successfully,-1 days +19:38:00,0.090671,-5.58
+2025-04-24,BNB-EUR,532.805,0.9384,500,532.08,533.53,0.27%,No,No,Frequent Levels with Direction,1.36,0 days 01:00:00,Trade executed successfully,-1 days +23:42:00,533.58,1.41
+2025-04-24,ZRC-EUR,0.0349,14316.3923,500,0.0347,0.0351,1.03%,No,No,Frequent Levels with Direction,5.73,0 days 06:54:00,Trade executed successfully,-1 days +21:39:00,0.034787,1.25
+2025-04-24,AUDIO-EUR,0.0672,7436.4371,500,0.0668,0.0677,1.32%,No,No,Frequent Levels with Direction,6.69,0 days 01:47:00,Trade executed successfully,-1 days +14:09:00,0.066709,-0.68
+2025-04-24,ZEN-EUR,8.5485,58.4898,500,8.4746,8.6224,1.74%,No,No,Frequent Levels with Direction,8.64,0 days 05:37:00,Trade executed successfully,-1 days +14:14:00,8.3853,-5.22
+2025-04-24,PYTH-EUR,0.1337,3739.8556,500,0.1326,0.1348,1.68%,No,No,Frequent Levels with Direction,8.23,0 days 03:20:00,Trade executed successfully,-1 days +19:54:00,0.13174,-3.22
+2025-04-24,SUPER-EUR,0.5669,881.9898,500,0.5606,0.5732,2.27%,No,No,Frequent Levels with Direction,11.11,0 days 01:55:00,Trade executed successfully,-1 days +19:00:00,0.55967,-0.82
+2025-04-24,HEI-EUR,0.3057,1635.751,500,0.2977,0.3137,5.39%,No,No,Frequent Levels with Direction,26.17,2 days 01:51:00,Not triggered,,0.29816,0.75
+2025-04-24,WOO-EUR,0.0625,8002.6249,500,0.061,0.0639,4.77%,No,No,Frequent Levels with Direction,23.21,0 days 05:34:00,Trade executed successfully,-1 days +18:04:00,0.060595,-3.24
+2025-04-24,ZRO-EUR,2.3856,209.5865,500,2.3754,2.3959,0.86%,No,No,Frequent Levels with Direction,4.3,0 days 06:35:00,Trade executed successfully,-1 days +20:32:00,2.387,2.43
+2025-04-24,ARKM-EUR,0.4835,1034.062,500,0.479,0.4881,1.89%,No,No,Frequent Levels with Direction,9.41,0 days 02:07:00,Trade executed successfully,-1 days +20:42:00,0.47051,-8.78
+2025-04-24,TOKEN-EUR,0.0135,36912.6278,500,0.0134,0.0137,2.37%,No,No,Frequent Levels with Direction,11.07,0 days 02:30:00,Trade executed successfully,-1 days +14:26:00,0.013256,-5.32
+2025-04-24,AKT-EUR,1.0578,472.6791,500,1.0422,1.0734,2.99%,No,No,Frequent Levels with Direction,14.75,0 days 14:46:00,Trade executed successfully,-1 days +19:40:00,1.0285,-6.48
+2025-04-24,ACE-EUR,0.5529,904.2654,500,0.5438,0.5621,3.36%,No,No,Frequent Levels with Direction,16.55,0 days 07:45:00,Trade executed successfully,-1 days +11:37:00,0.5437,-0.09
+2025-04-24,ATH-EUR,0.0258,19414.083,500,0.0254,0.0262,3.13%,No,No,Frequent Levels with Direction,15.53,0 days 15:31:00,Not triggered,,0.02542,0.39
+2025-04-24,PEAQ-EUR,0.1245,4017.1936,500,0.1215,0.1275,4.95%,No,No,Frequent Levels with Direction,24.1,0 days 01:49:00,Trade executed successfully,-1 days +20:58:00,0.1195,-8.03
+2025-04-24,XYO-EUR,0.0094,53255.5093,500,0.0093,0.0095,2.54%,No,No,Frequent Levels with Direction,10.65,0 days 01:27:00,Trade executed successfully,-1 days +22:05:00,0.0092851,-0.79
+2025-04-24,EOS-EUR,0.5867,852.188,500,0.5843,0.5891,0.83%,No,No,Frequent Levels with Direction,4.09,0 days 02:57:00,Trade executed successfully,-1 days +22:47:00,0.56961,-12.52
+2025-04-24,SLF-EUR,0.1898,2634.9073,500,0.1865,0.1931,3.54%,No,No,Frequent Levels with Direction,17.39,2 days 04:40:00,Trade executed successfully,-1 days +14:08:00,0.1846,-5.01
+2025-04-24,KSM-EUR,13.5425,36.9208,500,13.447,13.638,1.42%,No,No,Frequent Levels with Direction,7.05,0 days 01:11:00,Trade executed successfully,-1 days +19:01:00,13.424,-0.85
+2025-04-24,LINK-USDC,14.849,33.6723,500,14.613,15.085,3.23%,No,No,Frequent Levels with Direction,15.89,0 days 06:52:00,Trade executed successfully,-1 days +09:18:00,14.527,-2.9
+2025-04-24,LTO-EUR,0.0334,14973.6464,500,0.0328,0.034,3.8%,No,No,Frequent Levels with Direction,17.97,0 days 00:13:00,Trade executed successfully,-1 days +22:23:00,0.032039,-11.39
+2025-04-24,TNSR-EUR,0.1336,3741.3948,500,0.1323,0.135,2.06%,No,No,Frequent Levels with Direction,10.1,0 days 02:03:00,Trade executed successfully,-1 days +21:57:00,0.13277,1.76
+2025-04-24,FUEL-EUR,0.0095,52478.2871,500,0.0095,0.0096,1.24%,No,No,Frequent Levels with Direction,5.25,0 days 03:54:00,Trade executed successfully,-1 days +21:59:00,0.00941,-4.72
+2025-04-24,FLR-EUR,0.0147,33995.1047,500,0.0145,0.0149,2.9%,No,No,Frequent Levels with Direction,13.6,0 days 04:05:00,Trade executed successfully,-1 days +15:56:00,0.01455,1.7
+2025-04-24,GTC-EUR,0.2868,1743.284,500,0.2816,0.292,3.67%,No,No,Frequent Levels with Direction,18.13,0 days 05:02:00,Entry only,,0.27218,-16.42
+2025-04-24,OSMO-EUR,0.2148,2327.4217,500,0.2118,0.2179,2.91%,No,No,Frequent Levels with Direction,14.2,0 days 03:50:00,Trade executed successfully,-1 days +04:49:00,0.20928,-5.87
+2025-04-24,ETH-EUR,1561.25,0.3203,500,1557.8,1564.7,0.44%,No,No,Frequent Levels with Direction,2.21,0 days 00:26:00,Trade executed successfully,-1 days +23:07:00,1561.9,1.31
+2025-04-24,RED-EUR,0.3515,1422.4144,500,0.3479,0.3551,2.06%,No,No,Frequent Levels with Direction,10.24,0 days 11:48:00,Trade executed successfully,-1 days +09:35:00,0.33726,-15.13
+2025-04-24,MOVE-EUR,0.2147,2329.2649,500,0.2086,0.2208,5.85%,No,No,Frequent Levels with Direction,28.42,0 days 01:06:00,Trade executed successfully,-1 days +11:52:00,0.205,-8.39
+2025-04-24,S-EUR,0.45,1111.2099,500,0.4473,0.4526,1.18%,No,No,Frequent Levels with Direction,5.89,0 days 04:51:00,Trade executed successfully,-1 days +21:14:00,0.44717,-0.14
+2025-04-24,ENA-EUR,0.297,1683.445,500,0.2934,0.3006,2.48%,No,No,Frequent Levels with Direction,12.12,0 days 01:40:00,Trade executed successfully,-1 days +19:51:00,0.29367,0.45
+2025-04-24,OP-EUR,0.6728,743.1187,500,0.6715,0.6742,0.4%,No,No,Frequent Levels with Direction,2.01,0 days 01:28:00,Trade executed successfully,-1 days +21:59:00,0.67406,1.9

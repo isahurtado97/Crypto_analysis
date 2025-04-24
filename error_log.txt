@@ -1,0 +1,14 @@
+2025-04-23T09:14:19.042344 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=240
+2025-04-23T09:15:53.289822 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=240
+2025-04-23T09:17:43.524189 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=720
+2025-04-23T09:19:33.094119 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=720
+2025-04-23T09:47:14.482409 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=720
+2025-04-23T09:49:06.384056 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=720
+2025-04-23T09:52:18.192471 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=480
+2025-04-23T09:53:59.126230 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=480
+2025-04-23T09:54:30.875216 - BADGER-EUR – 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/ticker/price?market=BADGER-EUR
+2025-04-23T10:00:29.425980 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=720
+2025-04-23T10:02:22.746158 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=720
+2025-04-23T10:02:56.037907 - BADGER-EUR – 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/ticker/price?market=BADGER-EUR
+2025-04-23T10:03:24.023741 - HTTPError for BADGER-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BADGER-EUR/candles?interval=1m&limit=720
+2025-04-23T10:05:14.259495 - HTTPError for BETA-EUR: 400 Client Error: Bad Request for url: https://api.bitvavo.com/v2/BETA-EUR/candles?interval=1m&limit=720
