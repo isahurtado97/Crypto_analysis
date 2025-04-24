@@ -2,8 +2,18 @@ import schedule
 import time
 import subprocess
 from threading import Thread
+import os
 
-# --- Funciones para correr los scripts ---
+# --- Run initial setup script ---
+def run_shell_script(script_path):
+    print(f"🔧 Running setup script: {script_path}")
+    try:
+        subprocess.run(["bash", script_path], check=True)
+        print("✅ Setup completed.")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Setup script failed: {e}")
+
+# --- Functions to run core scripts ---
 def run_analysis():
     print("🔁 Running: technical_analysis.py + check_entry.py")
     subprocess.run(["python", "python/technical_analysis.py"])
@@ -13,12 +23,10 @@ def run_prediction_check():
     print("🔁 Running: check_prediction.py")
     subprocess.run(["python", "python/check_prediction.py"])
 
-# --- Scheduler ---
+# --- Scheduler setup ---
 def run_scheduler():
-    # Ejecuta inmediatamente al inicio
-    run_analysis()
+    run_analysis()  # run once immediately
 
-    # Programa cada 15 minutos y cada 4 horas
     schedule.every(15).minutes.do(run_analysis)
     schedule.every(4).hours.do(run_prediction_check)
 
@@ -26,11 +34,14 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(10)
 
-# --- Main ---
+# --- Main service entrypoint ---
 if __name__ == "__main__":
-    # Inicia el scheduler en segundo plano
+    # STEP 0: Run shell setup script first
+    run_shell_script("bash/set-up.sh")
+
+    # STEP 1: Start scheduled background task
     t = Thread(target=run_scheduler)
     t.start()
 
-    # Lanza el dashboard
+    # STEP 2: Launch Streamlit dashboard
     subprocess.run(["streamlit", "run", "python/dashboard.py"])
