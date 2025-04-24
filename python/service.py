@@ -111,8 +111,11 @@ else:
     st.subheader("📊 Key Metrics")
     col1, col2, col3 = st.columns(3)
     col1.metric("Tickers", len(filtered_df))
-    last_run = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
-    col2.metric("Last Update", last_run)
+    # Metric 2: Last Update in CEST
+    utc_time = datetime.utcfromtimestamp(os.path.getmtime(file_path))
+    cest = pytz.timezone("Europe/Madrid")
+    last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S %Z')
+    col2.metric("Last Update", last_run_cest)
 
     if "Volatility between entry and exit" in filtered_df.columns:
         try:
