@@ -1,3 +1,4 @@
+# Ignore virtual environment
 crypto_analysis/
 # Ignore generated CSVs
 csv/
