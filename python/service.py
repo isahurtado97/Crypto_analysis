@@ -6,14 +6,15 @@ import threading
 from datetime import datetime
 import plotly.graph_objects as go
 import pytz  
+import subprocess
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
-            exec(open("python/technical_analysis.py").read())
-            exec(open("python/check_entry.py").read())
+            subprocess.run(["python", "python/technical_analysis.py"])
+            subprocess.run(["python", "python/check_entry.py"])
         except Exception as e:
             print("❌ Error during analysis:", e)
 
@@ -22,7 +23,7 @@ def background_scheduler():
         if now % (4 * 60 * 60) < 900:  # 15-min window
             print("🔁 Running 4-hour prediction check...")
             try:
-                exec(open("python/check_prediction.py").read())
+                subprocess.run(["python", "python/check_prediction.py"])
             except Exception as e:
                 print("❌ Error during prediction check:", e)
 
