@@ -9,25 +9,28 @@ import pytz
 import subprocess
 
 # --- BACKGROUND SCHEDULER ---
+import subprocess
+
 def background_scheduler():
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
-            subprocess.run(["python", "python/technical_analysis.py"])
-            subprocess.run(["python", "python/check_entry.py"])
-        except Exception as e:
-            print("❌ Error during analysis:", e)
+            subprocess.run(["python", "python/technical_analysis.py"], check=True)
+            subprocess.run(["python", "python/check_entry.py"], check=True)
+            print("✅ 15-minute analysis completed.")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Error running analysis scripts: {e}")
 
-        # Run prediction every 4 hours (within a time window)
         now = int(time.time())
-        if now % (4 * 60 * 60) < 900:  # 15-min window
+        if now % (4 * 60 * 60) < 900:  # Check if it's time to run prediction
             print("🔁 Running 4-hour prediction check...")
             try:
-                subprocess.run(["python", "python/check_prediction.py"])
-            except Exception as e:
-                print("❌ Error during prediction check:", e)
+                subprocess.run(["python", "python/check_prediction.py"], check=True)
+                print("✅ 4-hour prediction check completed.")
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Error running prediction script: {e}")
 
-        time.sleep(900)  # 15 minutes
+        time.sleep(900)  # Sleep for 15 minutes
 
 # --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
