@@ -4,4 +4,4 @@ plotly
 schedule
 requests
 numpy
-pytz  
+pytz
