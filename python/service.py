@@ -10,26 +10,24 @@ import subprocess
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
-    time.sleep(60)  # Wait to ensure dependencies are loaded in Streamlit Cloud
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
-            subprocess.run(["python", "python/technical_analysis.py"], check=True)
-            subprocess.run(["python", "python/check_entry.py"], check=True)
-            print("✅ 15-minute analysis completed.")
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Error running analysis scripts: {e}")
+            subprocess.run(["python", "python/technical_analysis.py"])
+            subprocess.run(["python", "python/check_entry.py"])
+        except Exception as e:
+            print("❌ Error during analysis:", e)
 
+        # Run prediction every 4 hours (within a time window)
         now = int(time.time())
-        if now % (4 * 60 * 60) < 900:
+        if now % (4 * 60 * 60) < 900:  # 15-min window
             print("🔁 Running 4-hour prediction check...")
             try:
-                subprocess.run(["python", "python/check_prediction.py"], check=True)
-                print("✅ 4-hour prediction check completed.")
-            except subprocess.CalledProcessError as e:
-                print(f"❌ Error running prediction script: {e}")
+                subprocess.run(["python", "python/check_prediction.py"])
+            except Exception as e:
+                print("❌ Error during prediction check:", e)
 
-        time.sleep(900)  # Sleep for 15 minutes
+        time.sleep(900)  # 15 minutes
 
 # --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
@@ -38,19 +36,18 @@ if "scheduler_started" not in st.session_state:
 
 # --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
-st.markdown("## 📈 Crypto Entry-Exit Dashboard", unsafe_allow_html=False)
-st.markdown("*AI analysis of crypto trade signals*", unsafe_allow_html=False)
+st.markdown("<h1 style='text-align: center; color: #00BFA6;'>📈 Crypto Entry-Exit Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>AI analysis of crypto trade signals</p>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- Manual EXECUTION buttons ---
 col_a, col_b = st.columns(2)
-
 if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
     with st.spinner("Running analysis..."):
         try:
-            subprocess.run(["python", "python/technical_analysis.py"], check=True)
-            subprocess.run(["python", "python/check_entry.py"], check=True)
+            exec(open("python/technical_analysis.py").read())
+            exec(open("python/check_entry.py").read())
             st.success("✅ Analysis completed successfully.")
             st.cache_data.clear()
         except Exception as e:
@@ -59,7 +56,7 @@ if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
 if col_b.button("📊 Run 24h Prediction Check Now"):
     with st.spinner("Running prediction check..."):
         try:
-            subprocess.run(["python", "python/check_prediction.py"], check=True)
+            exec(open("python/check_prediction.py").read())
             st.success("✅ Prediction check completed.")
             st.cache_data.clear()
         except Exception as e:
@@ -117,9 +114,8 @@ else:
     st.subheader("📊 Key Metrics")
     col1, col2, col3 = st.columns(3)
     col1.metric("Tickers", len(filtered_df))
-
     # Metric 2: Last Update in CEST
-    utc_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+    utc_time = datetime.utcfromtimestamp(os.path.getmtime(file_path))
     cest = pytz.timezone("Europe/Madrid")
     last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S')
     col2.metric("Last Update", last_run_cest)
