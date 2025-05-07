@@ -7,6 +7,7 @@ from datetime import datetime
 import plotly.graph_objects as go
 import pytz  
 import subprocess
+import sys
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
@@ -14,8 +15,8 @@ def background_scheduler():
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
-            subprocess.run(["python", "python/technical_analysis.py"], check=True)
-            subprocess.run(["python", "python/check_entry.py"], check=True)
+            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
             print("✅ 15-minute analysis completed.")
         except subprocess.CalledProcessError as e:
             print(f"❌ Error running analysis scripts: {e}")
@@ -24,7 +25,7 @@ def background_scheduler():
         if now % (4 * 60 * 60) < 900:
             print("🔁 Running 4-hour prediction check...")
             try:
-                subprocess.run(["python", "python/check_prediction.py"], check=True)
+                subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
                 print("✅ 4-hour prediction check completed.")
             except subprocess.CalledProcessError as e:
                 print(f"❌ Error running prediction script: {e}")
@@ -49,8 +50,8 @@ col_a, col_b = st.columns(2)
 if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
     with st.spinner("Running analysis..."):
         try:
-            subprocess.run(["python", "python/technical_analysis.py"], check=True)
-            subprocess.run(["python", "python/check_entry.py"], check=True)
+            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
             st.success("✅ Analysis completed successfully.")
             st.cache_data.clear()
         except Exception as e:
@@ -59,7 +60,7 @@ if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
 if col_b.button("📊 Run 24h Prediction Check Now"):
     with st.spinner("Running prediction check..."):
         try:
-            subprocess.run(["python", "python/check_prediction.py"], check=True)
+            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
             st.success("✅ Prediction check completed.")
             st.cache_data.clear()
         except Exception as e:
