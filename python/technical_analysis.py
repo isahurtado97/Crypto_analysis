@@ -11,7 +11,7 @@ def get_all_tickers():
     return [m['market'] for m in res.json()]
 
 def get_1min_candles(ticker):
-    res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": "1m", "limit": 120})
+    res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": "5m", "limit": 60})
     candles = res.json()
     df = pd.DataFrame(candles, columns=["timestamp", "open", "high", "low", "close", "volume"])
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
