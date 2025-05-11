@@ -1,6 +1,5 @@
 import pandas as pd
 import requests
-import os
 from datetime import datetime, timedelta
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
@@ -22,12 +21,7 @@ def get_candles_1m(ticker, start_dt, end_dt):
         return None
 
 def check_predictions_last_24h():
-    file_path = "csv/tickers_ready_full.csv"
-    if not os.path.exists(file_path):
-        print("⚠️ Archivo 'tickers_ready_full.csv' no encontrado. Ejecuta primero check_entry.py.")
-        return
-
-    df = pd.read_csv(file_path)
+    df = pd.read_csv("csv/tickers_ready_full.csv")
     updated_rows = []
 
     now = datetime.utcnow()

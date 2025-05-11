@@ -5,14 +5,13 @@ import time
 import threading
 from datetime import datetime
 import plotly.graph_objects as go
-import pytz
+import pytz  
 import subprocess
 import sys
-import numpy as np
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
-    time.sleep(60)
+    time.sleep(60)  # Wait to ensure dependencies are loaded in Streamlit Cloud
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
@@ -31,7 +30,7 @@ def background_scheduler():
             except subprocess.CalledProcessError as e:
                 print(f"❌ Error running prediction script: {e}")
 
-        time.sleep(1800)
+        time.sleep(1800)  # Sleep for 15 minutes
 
 # --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
@@ -40,14 +39,34 @@ if "scheduler_started" not in st.session_state:
 
 # --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
-st.markdown("## 📈 Crypto Entry-Exit Dashboard")
-st.markdown("*AI analysis of crypto trade signals*")
-st.markdown(
-    "<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>",
-    unsafe_allow_html=True)
+st.markdown("## 📈 Crypto Entry-Exit Dashboard", unsafe_allow_html=False)
+st.markdown("*AI analysis of crypto trade signals*", unsafe_allow_html=False)
+st.markdown("<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Crypto Dashboard", "💰 Calculadora Take Profit", "📅 Eventos Cripto", "📋 Verificar Reglas de Entrada"])
+# --- Manual EXECUTION buttons ---
+col_a, col_b = st.columns(2)
+
+if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
+    with st.spinner("Running analysis..."):
+        try:
+            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+            st.success("✅ Analysis completed successfully.")
+            st.cache_data.clear()
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
+if col_b.button("📊 Run 24h Prediction Check Now"):
+    with st.spinner("Running prediction check..."):
+        try:
+            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+            st.success("✅ Prediction check completed.")
+            st.cache_data.clear()
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
+st.markdown("---")
 
 # --- DATA LOADERS ---
 @st.cache_data(ttl=900)
@@ -59,214 +78,91 @@ def load_checked_data():
     path = "csv/tickers_ready_24h_checked.csv"
     return pd.read_csv(path) if os.path.exists(path) else None
 
+# --- MAIN LOGIC ---
 file_path = "csv/tickers_ready_full.csv"
 
-st.markdown("### 🕒 Estado del Análisis")
-
-amsterdam_time = datetime.now(pytz.timezone("Europe/Amsterdam"))
-st.write(f"🗓️ Última ejecución (Amsterdam): `{amsterdam_time.strftime('%Y-%m-%d %H:%M:%S')}`")
-
-if os.path.exists(file_path):
-    df_status = load_main_data()
-    if "Volatility between entry and exit" in df_status.columns and not df_status.empty:
-        df_status["Volatility %"] = (
-            df_status["Volatility between entry and exit"]
-            .astype(str)
-            .str.replace("%", "")
-            .astype(float)
-        )
-        most_volatile = df_status.loc[df_status["Volatility %"].idxmax()]
-        st.write(f"📈 Ticker más volátil: `{most_volatile['Ticker']}` con `{most_volatile['Volatility between entry and exit']}`")
-    st.write(f"🔢 Total de tickers en tabla: `{len(df_status)}`")
+if not os.path.exists(file_path):
+    st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
+    st.stop()
 else:
-    st.info("⏳ Esperando resultados iniciales para mostrar estadísticas.")
+    df = load_main_data()
 
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("🔁 Ejecutar análisis manual"):
+    # --- Sidebar Filters ---
+    st.sidebar.header("⚙️ Filters")
+    tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
+    result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
+
+    filtered_df = df[df["Ticker"].isin(tickers)]
+    if result_filter != "All":
+        filtered_df = filtered_df[filtered_df["Results"] == result_filter]
+
+    # --- Trade Table ---
+    st.subheader("🧾 Trade Overview")
+    st.dataframe(filtered_df.style.applymap(
+        lambda val: "background-color: #c6f6d5" if val == "Profitable" else (
+            "background-color: #fed7d7" if val == "At loss" else ""),
+        subset=["Results"]
+    ))
+
+    # --- Export Button ---
+    st.markdown("### 💾 Export CSV")
+    csv_export = filtered_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download CSV",
+        data=csv_export,
+        file_name=f"filtered_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        mime="text/csv"
+    )
+
+    # --- Key Metrics ---
+    st.subheader("📊 Key Metrics")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Tickers", len(filtered_df))
+
+    # Metric 2: Last Update in CEST
+    utc_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+    cest = pytz.timezone("Europe/Madrid")
+    last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S')
+    col2.metric("Last Update", last_run_cest)
+
+    if "Volatility between entry and exit" in filtered_df.columns:
         try:
-            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
-            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
-            st.success("✅ Análisis técnico ejecutado correctamente.")
-        except subprocess.CalledProcessError as e:
-            st.error(f"❌ Error al ejecutar análisis: {e}")
+            filtered_df["Volatility %"] = filtered_df["Volatility between entry and exit"].str.replace("%", "").astype(float)
+            max_row = filtered_df.loc[filtered_df["Volatility %"].idxmax()]
+            col3.metric("Max Volatility", f"{max_row['Ticker']}", f"{max_row['Volatility %']:.2f}%")
+        except:
+            col3.metric("Max Volatility", "Error", "⚠️")
 
-with col2:
-    if st.button("📊 Ejecutar predicción manual"):
-        try:
-            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
-            st.success("✅ Predicciones ejecutadas correctamente.")
-        except subprocess.CalledProcessError as e:
-            st.error(f"❌ Error al ejecutar predicción: {e}")
+    # --- Ticker Details ---
+    if len(tickers) == 1:
+        st.markdown("---")
+        st.subheader(f"🔎 Details for `{tickers[0]}`")
+        info = filtered_df.iloc[0]
+        st.markdown(f"""
+        - **Average Price:** `{info['Average Price']}`
+        - **Entry Price:** `{info['Entry']}`
+        - **Exit Price:** `{info['Exit']}`
+        - **Current Price:** `{info['Current Price']}`
+        """)
 
-with tab1:
-    if not os.path.exists(file_path):
-        st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
-        st.stop()
+        # Chart
+        st.subheader("📊 Price Comparison")
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=[info['Average Price'], info['Entry'], info['Exit'], info['Current Price']],
+            y=["Average", "Entry", "Exit", "Current"],
+            orientation='h',
+            marker_color=["#2E86AB", "#EF553B", "#00CC96", "#9B59B6"]
+        ))
+        fig.update_layout(height=350, margin=dict(l=100, r=40, t=40, b=40))
+        st.plotly_chart(fig, use_container_width=True)
+
+    # --- Prediction Check Results ---
+    checked_df = load_checked_data()
+    if checked_df is not None:
+        st.markdown("---")
+        st.subheader("📋 Prediction Check (Last 24h)")
+        checked_filtered = checked_df[checked_df["Ticker"].isin(filtered_df["Ticker"])]
+        st.dataframe(checked_filtered[["Ticker", "Results", "Trade Time"]])
     else:
-        df = load_main_data()
-
-        # --- Sidebar Filters ---
-        st.sidebar.header("⚙️ Filters")
-        tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
-        result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
-        rsi_min = st.sidebar.slider("RSI Minimum (any)", min_value=0, max_value=100, value=0)
-        rsi_max = st.sidebar.slider("RSI Maximum (any)", min_value=0, max_value=100, value=100)
-
-        filtered_df = df[df["Ticker"].isin(tickers)]
-        if result_filter != "All":
-            filtered_df = filtered_df[filtered_df["Results"] == result_filter]
-
-        filtered_df = filtered_df[(filtered_df["RSI_15m"] >= rsi_min) & (filtered_df["RSI_15m"] <= rsi_max) |
-                                   (filtered_df["RSI_4h"] >= rsi_min) & (filtered_df["RSI_4h"] <= rsi_max)]
-
-        # --- Trade Overview Table ---
-        st.subheader("🧾 Trade Overview")
-        cols_to_show = [
-            "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
-            "Volatility between entry and exit", "RSI_15m", "MACD Trend 15m", "RSI_4h", "MACD Trend 4h", "Results"
-        ]
-
-        if "Volatility between entry and exit" in filtered_df.columns:
-            try:
-                filtered_df["Volatility %"] = (
-                    filtered_df["Volatility between entry and exit"]
-                    .astype(str)
-                    .str.replace("%", "")
-                    .astype(float)
-                )
-            except:
-                filtered_df["Volatility %"] = None
-
-        def highlight_result(val):
-            if val == "Profitable":
-                return "background-color: #c6f6d5"
-            elif val == "At loss":
-                return "background-color: #fed7d7"
-            return ""
-
-        def highlight_rsi(val):
-            try:
-                v = float(val)
-                if v > 70:
-                    return "background-color: #fdd"
-                elif v < 30:
-                    return "background-color: #dfd"
-            except:
-                return ""
-            return ""
-
-        styled_df = (
-            filtered_df[cols_to_show]
-            .style
-            .applymap(highlight_result, subset=["Results"])
-            .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
-            .background_gradient(
-                cmap="YlGn", subset=["Volatility between entry and exit"],
-                gmap=filtered_df["Volatility %"] if "Volatility %" in filtered_df else None
-            )
-        )
-
-        st.dataframe(styled_df)
-
-        # --- Export CSV Button ---
-        st.markdown("### 💾 Export CSV")
-        csv_export = filtered_df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download CSV",
-            data=csv_export,
-            file_name=f"filtered_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
-
-        # --- Strategy Tables ---
-        st.markdown("---")
-        st.subheader("📈 Long-Term Trading Opportunities")
-        long_term = filtered_df[
-            (filtered_df["RSI_4h"] < 40) &
-            (filtered_df["MACD Trend 4h"] == "Alcista")
-        ]
-        st.dataframe(long_term[cols_to_show])
-
-        st.markdown("### 💾 Export Long-Term Opportunities")
-        long_csv = long_term.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Long-Term CSV",
-            data=long_csv,
-            file_name=f"long_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
-
-        st.markdown("---")
-        st.subheader("⚡ Short-Term Trading Opportunities")
-        short_term = filtered_df[
-            (filtered_df["RSI_15m"] < 40) &
-            (filtered_df["MACD Trend 15m"] == "Alcista")
-        ]
-        st.dataframe(short_term[cols_to_show])
-
-        st.markdown("### 💾 Export Short-Term Opportunities")
-        short_csv = short_term.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Short-Term CSV",
-            data=short_csv,
-            file_name=f"short_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
-
-        # --- Prediction Check Results ---
-        checked_df = load_checked_data()
-        if checked_df is not None:
-            st.markdown("---")
-            st.subheader("📋 Prediction Check (Last 24h)")
-            checked_filtered = checked_df[checked_df["Ticker"].isin(filtered_df["Ticker"])]
-            st.dataframe(checked_filtered[["Ticker", "Results", "Trade Time"]])
-        else:
-            st.info("ℹ️ Prediction check results will appear here after the first 4-hour cycle.")
-
-with tab2:
-    st.markdown("### 💰 Calculadora de Salida con % de Ganancia")
-    entry_price = st.number_input("Precio de entrada (€ por unidad)", min_value=0.0, format="%f")
-    invested_amount = st.number_input("Inversión en euros", min_value=0.0, format="%f")
-    profit_percent = st.slider("% de ganancia esperada", min_value=0.5, max_value=10.0, value=2.0, step=0.1)
-
-    if entry_price > 0 and invested_amount > 0:
-        quantity = invested_amount / entry_price
-        target_exit_price = entry_price * (1 + profit_percent / 100)
-        expected_return = quantity * target_exit_price
-
-        st.success(f"🎯 Precio objetivo con +{profit_percent:.1f}%: {target_exit_price:.5f} €")
-        st.info(f"💰 Obtendrás: {quantity:.2f} unidades por {invested_amount:.2f} €")
-        st.success(f"💵 Valor de salida estimado: {expected_return:.2f} €")
-
-with tab3:
-    st.markdown("### 📅 Eventos Importantes que Afectan a las Criptomonedas")
-    st.markdown("Consulta CoinMarketCal para conocer próximos eventos relevantes que pueden impactar el mercado cripto.")
-    st.markdown("[🔗 Ver en CoinMarketCal](https://coinmarketcal.com/en/)")
-
-with tab4:
-    st.markdown("### 📋 Verificar Reglas de Entrada para Trading")
-
-    strategy = st.selectbox("Selecciona estrategia:", ["Long-Term", "Short-Term"])
-
-    entry_price = st.number_input("Precio de entrada")
-    low_price = st.number_input("Precio más bajo frecuente")
-    macd = st.selectbox("MACD", ["Alcista", "Bajista"])
-
-    if strategy == "Long-Term":
-        rsi_4h = st.number_input("RSI 4h", min_value=0, max_value=100)
-        if st.button("Verificar Long-Term"):
-            price_diff_pct = ((entry_price - low_price) / low_price) * 100 if low_price > 0 else 0
-            if rsi_4h < 30 and macd == "Alcista" and price_diff_pct > 1:
-                st.success("✅ Cumple condiciones para estrategia Long-Term")
-            else:
-                st.error("❌ No cumple condiciones para estrategia Long-Term")
-
-    if strategy == "Short-Term":
-        rsi_15m = st.number_input("RSI 15m", min_value=0, max_value=100)
-        if st.button("Verificar Short-Term"):
-            price_diff_pct = ((entry_price - low_price) / low_price) * 100 if low_price > 0 else 0
-            if rsi_15m < 30 and macd == "Alcista" and price_diff_pct > 1:
-                st.success("✅ Cumple condiciones para estrategia Short-Term")
-            else:
-                st.error("❌ No cumple condiciones para estrategia Short-Term")
+        st.info("ℹ️ Prediction check results will appear here after the first 4-hour cycle.")
