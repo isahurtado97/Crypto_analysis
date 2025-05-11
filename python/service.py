@@ -22,7 +22,7 @@ def background_scheduler():
             print(f"❌ Error running analysis scripts: {e}")
 
         now = int(time.time())
-        if now % (4 * 60 * 60) < 900:
+        if now % (30 * 60) < 60:
             print("🔁 Running 4-hour prediction check...")
             try:
                 subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
@@ -30,7 +30,7 @@ def background_scheduler():
             except subprocess.CalledProcessError as e:
                 print(f"❌ Error running prediction script: {e}")
 
-        time.sleep(900)  # Sleep for 15 minutes
+        time.sleep(1800)  # Sleep for 15 minutes
 
 # --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
