@@ -15,8 +15,8 @@ def background_scheduler():
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
-            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
-            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+            subprocess.run([sys.executable, "technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "check_entry.py"], check=True)
             print("✅ 15-minute analysis completed.")
         except subprocess.CalledProcessError as e:
             print(f"❌ Error running analysis scripts: {e}")
@@ -25,7 +25,7 @@ def background_scheduler():
         if now % (30 * 60) < 60:
             print("🔁 Running 4-hour prediction check...")
             try:
-                subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+                subprocess.run([sys.executable, "check_prediction.py"], check=True)
                 print("✅ 4-hour prediction check completed.")
             except subprocess.CalledProcessError as e:
                 print(f"❌ Error running prediction script: {e}")
@@ -52,8 +52,8 @@ col_a, col_b = st.columns(2)
 if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
     with st.spinner("Running analysis..."):
         try:
-            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
-            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+            subprocess.run([sys.executable, "technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "check_entry.py"], check=True)
             st.success("✅ Analysis completed successfully.")
             st.cache_data.clear()
         except Exception as e:
@@ -62,7 +62,7 @@ if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
 if col_b.button("📊 Run 24h Prediction Check Now"):
     with st.spinner("Running prediction check..."):
         try:
-            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+            subprocess.run([sys.executable, "check_prediction.py"], check=True)
             st.success("✅ Prediction check completed.")
             st.cache_data.clear()
         except Exception as e:
@@ -99,12 +99,36 @@ else:
 
     # --- Trade Overview Table ---
     st.subheader("🧾 Trade Overview")
-    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "RSI", "MACD Trend", "Results"]
-    st.dataframe(filtered_df[cols_to_show].style.applymap(
+    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "Volatility between entry and exit", "RSI", "MACD Trend", "Results"]
+
+    if "Volatility between entry and exit" in filtered_df.columns:
+        try:
+            filtered_df["Volatility %"] = (
+                filtered_df["Volatility between entry and exit"]
+                .str.replace("%", "")
+                .astype(float)
+            )
+        except:
+            filtered_df["Volatility %"] = None
+
+    def highlight_volatility(val):
+        try:
+            v = float(val.replace("%", "")) if isinstance(val, str) else float(val)
+            if v >= 3:
+                return "background-color: #d4edda"
+        except:
+            return ""
+        return ""
+
+    styled_df = filtered_df[cols_to_show].style.applymap(
         lambda val: "background-color: #c6f6d5" if val == "Profitable" else (
             "background-color: #fed7d7" if val == "At loss" else ""),
         subset=["Results"]
-    ))
+    ).background_gradient(
+        cmap="YlGn", subset=["Volatility between entry and exit"]
+    )
+
+    st.dataframe(styled_df)
 
     # --- Export CSV Button ---
     st.markdown("### 💾 Export CSV")
@@ -126,9 +150,8 @@ else:
     last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S')
     col2.metric("Last Update", last_run_cest)
 
-    if "Volatility between entry and exit" in filtered_df.columns:
+    if "Volatility %" in filtered_df.columns:
         try:
-            filtered_df["Volatility %"] = filtered_df["Volatility between entry and exit"].str.replace("%", "").astype(float)
             max_row = filtered_df.loc[filtered_df["Volatility %"].idxmax()]
             col3.metric("Max Volatility", f"{max_row['Ticker']}", f"{max_row['Volatility %']:.2f}%")
         except:
