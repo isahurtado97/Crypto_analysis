@@ -33,18 +33,14 @@ def background_scheduler():
 
         time.sleep(1800)
 
-# --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
     threading.Thread(target=background_scheduler, daemon=True).start()
     st.session_state.scheduler_started = True
 
-# --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
 st.markdown("## 📈 Crypto Entry-Exit Dashboard")
 st.markdown("*AI analysis of crypto trade signals*")
-st.markdown(
-    "<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>",
-    unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 tab1, tab2, tab3, tab4 = st.tabs([
@@ -54,7 +50,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📣 Eventos Cripto (CoinMarketCal)"
 ])
 
-# TAB 1: Crypto Dashboard
+# TAB 1
 with tab1:
     col_a, col_b = st.columns(2)
 
@@ -81,20 +77,13 @@ with tab1:
     def load_main_data():
         return pd.read_csv("csv/tickers_ready_full.csv")
 
-    @st.cache_data(ttl=900)
-    def load_checked_data():
-        path = "csv/tickers_ready_24h_checked.csv"
-        return pd.read_csv(path) if os.path.exists(path) else None
-
     file_path = "csv/tickers_ready_full.csv"
-
     if not os.path.exists(file_path):
-        st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
+        st.info("⏳ Data is being prepared...")
         st.stop()
     else:
         df = load_main_data()
 
-        # Key metrics
         col1, col2, col3 = st.columns(3)
         col1.metric("📊 Tickers cargados", len(df))
 
@@ -149,13 +138,54 @@ with tab1:
         styled_df = (
             filtered_df[cols_to_show]
             .style
-            .applymap(highlight_result, subset=["Results"])
-            .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
+            .map(highlight_result, subset=["Results"])
+            .map(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
         )
 
         st.dataframe(styled_df)
 
-# TAB 2: Calculadora Take Profit
+        st.download_button(
+            label="💾 Exportar Trade Overview",
+            data=filtered_df[cols_to_show].to_csv(index=False).encode("utf-8"),
+            file_name="trade_overview.csv",
+            mime="text/csv"
+        )
+
+        st.markdown("---")
+        st.subheader("📈 Long-Term Trading Opportunities")
+        long_term = filtered_df[
+            (filtered_df["RSI_4h"] < 30) &
+            (filtered_df["MACD Trend 4h"] == "Alcista")
+        ]
+        if long_term.empty:
+            st.info("No hay oportunidades long-term actualmente.")
+        else:
+            st.dataframe(long_term[cols_to_show])
+            st.download_button(
+                label="📤 Exportar oportunidades Long-Term",
+                data=long_term.to_csv(index=False).encode("utf-8"),
+                file_name="long_term_opportunities.csv",
+                mime="text/csv"
+            )
+
+        st.markdown("---")
+        st.subheader("⚡ Short-Term Trading Opportunities")
+        short_term = filtered_df[
+            (filtered_df["RSI_15m"] < 30) &
+            (filtered_df["MACD Trend 15m"] == "Alcista")
+        ]
+        if short_term.empty:
+            st.info("No hay oportunidades short-term actualmente.")
+        else:
+            st.dataframe(short_term[cols_to_show])
+            st.download_button(
+                label="📤 Exportar oportunidades Short-Term",
+                data=short_term.to_csv(index=False).encode("utf-8"),
+                file_name="short_term_opportunities.csv",
+                mime="text/csv"
+            )
+
+# TAB 2: Calculadora
 with tab2:
     st.markdown("### 💰 Calculadora de Salida con % de Ganancia")
     entry_price = st.number_input("Precio de entrada (€ por unidad)", min_value=0.0, format="%f")
@@ -171,12 +201,12 @@ with tab2:
         st.info(f"💰 Obtendrás: {quantity:.2f} unidades por {invested_amount:.2f} €")
         st.success(f"💵 Valor de salida estimado: {expected_return:.2f} €")
 
-# TAB 3: Calendario Macroeconómico
+# TAB 3: Calendario
 with tab3:
     st.markdown("### 🗓️ Calendario Macroeconómico")
     st.markdown("[🔗 Abrir Calendario en Investing.com](https://es.investing.com/economic-calendar/?timeZone=56)")
 
-# TAB 4: Eventos Cripto
+# TAB 4: Eventos
 with tab4:
     st.markdown("### 📣 Eventos Importantes de Criptomonedas")
     st.markdown("[🔗 Abrir CoinMarketCal](https://coinmarketcal.com/en/)")

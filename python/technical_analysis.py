@@ -1,4 +1,3 @@
-# --- technical_analysis.py ---
 import requests
 import pandas as pd
 import numpy as np
@@ -7,11 +6,9 @@ from datetime import datetime
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 INVESTED_MONEY = 500
 
-
 def get_all_tickers():
     res = requests.get(f"{BITVAVO_URL}/markets")
     return [m['market'] for m in res.json()]
-
 
 def get_candles(ticker, interval="5m", limit=60):
     res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": interval, "limit": limit})
@@ -21,7 +18,6 @@ def get_candles(ticker, interval="5m", limit=60):
     df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
     return df.sort_values("timestamp").reset_index(drop=True)
 
-
 def frequent_levels(prices, bins=20):
     hist, edges = np.histogram(prices, bins=bins)
     idx_low = np.argmax(hist[:len(hist)//2])
@@ -30,14 +26,12 @@ def frequent_levels(prices, bins=20):
     high_level = round((edges[idx_high] + edges[idx_high+1])/2, 4)
     return low_level, high_level
 
-
 def direction(df, idx, period=5):
     if idx < period:
         return None
     ma_prev = df['close'].iloc[idx-period:idx].mean()
     price_now = df['close'].iloc[idx]
     return "up" if price_now > ma_prev else "down"
-
 
 def trade_with_direction(df):
     low_level, high_level = frequent_levels(df['close'])
@@ -64,7 +58,6 @@ def trade_with_direction(df):
     else:
         return None, None, None, None
 
-
 def simulate_all():
     now = datetime.now().strftime("%Y-%m-%d")
     tickers = get_all_tickers()
@@ -72,7 +65,7 @@ def simulate_all():
 
     for ticker in tickers:
         try:
-            df = get_candles(ticker, interval="5m", limit=60)
+            df = get_candles(ticker)
             if len(df) < 10:
                 skipped.append((ticker, "Insufficient data"))
                 continue
@@ -96,7 +89,7 @@ def simulate_all():
                 "Invested Money": INVESTED_MONEY,
                 "Entry": round(entry, 4),
                 "Exit": round(exit_price, 4),
-                "Volatility between entry and exit": f"{round(volatility,2)}%",
+                "Volatility between entry and exit": f"{round(volatility, 2)}%",
                 "No entry": "No",
                 "No Exit": "No",
                 "Trigger Points": "Frequent Levels with Direction",
@@ -117,7 +110,6 @@ def simulate_all():
 
     print(f"✅ {len(results)} tickers procesados correctamente.")
     print(f"⚠️ {len(skipped)} tickers omitidos. Revisa 'directional_frequent_levels_skipped.csv'.")
-
 
 if __name__ == "__main__":
     simulate_all()
