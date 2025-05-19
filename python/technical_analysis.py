@@ -12,10 +12,7 @@ def get_all_tickers():
     res = requests.get(f"{BITVAVO_URL}/markets")
     return [m['market'] for m in res.json()]
 
-<<<<<<< HEAD
-=======
 
->>>>>>> eed3b64 (new-logic-candlesfit)
 def get_candles(ticker, interval="5m", limit=60):
     res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": interval, "limit": limit})
     candles = res.json()
@@ -75,11 +72,7 @@ def simulate_all():
 
     for ticker in tickers:
         try:
-<<<<<<< HEAD
-            df = get_candles(ticker)
-=======
             df = get_candles(ticker, interval="5m", limit=60)
->>>>>>> eed3b64 (new-logic-candlesfit)
             if len(df) < 10:
                 skipped.append((ticker, "Insufficient data"))
                 continue
@@ -103,7 +96,7 @@ def simulate_all():
                 "Invested Money": INVESTED_MONEY,
                 "Entry": round(entry, 4),
                 "Exit": round(exit_price, 4),
-                "Volatility between entry and exit": f"{round(volatility, 2)}%",
+                "Volatility between entry and exit": f"{round(volatility,2)}%",
                 "No entry": "No",
                 "No Exit": "No",
                 "Trigger Points": "Frequent Levels with Direction",

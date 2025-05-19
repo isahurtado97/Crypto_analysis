@@ -2,19 +2,17 @@
 import pandas as pd
 import requests
 from datetime import datetime
-<<<<<<< HEAD
-import os
-=======
 import ta
 from technical_analysis import get_candles
->>>>>>> eed3b64 (new-logic-candlesfit)
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 LOG_FILE = "error_log.txt"
 
+
 def log_error(message):
     with open(LOG_FILE, "a") as log:
         log.write(f"{datetime.now().isoformat()} - {message}\n")
+
 
 def is_valid_market(ticker):
     try:
@@ -25,6 +23,7 @@ def is_valid_market(ticker):
     except Exception as e:
         log_error(f"Error checking market {ticker}: {e}")
         return False
+
 
 def get_current_price(ticker):
     if not is_valid_market(ticker):
@@ -43,11 +42,18 @@ def get_current_price(ticker):
         log_error(f"{ticker} – {e}")
         return None
 
-def check_entry_conditions_with_profit():
-    if not os.path.exists("csv/directional_frequent_levels.csv"):
-        print("⚠️ El archivo de entrada no existe aún.")
-        return
 
+def compute_indicators(df):
+    df = df.copy()
+    df["rsi"] = ta.momentum.RSIIndicator(close=df["close"]).rsi()
+    macd = ta.trend.MACD(close=df["close"])
+    df["macd"] = macd.macd()
+    df["macd_signal"] = macd.macd_signal()
+    df["macd_trend"] = df["macd"] > df["macd_signal"]
+    return df
+
+
+def check_entry_conditions_with_profit():
     df_trades = pd.read_csv("csv/directional_frequent_levels.csv")
     entries = []
 
@@ -60,11 +66,6 @@ def check_entry_conditions_with_profit():
         if current_price is None:
             continue
 
-<<<<<<< HEAD
-        if current_price <= entry_price * 1.005:
-            row_with_data = row.copy()
-            row_with_data["Current Price"] = round(current_price, 8)
-=======
         try:
             df_15m = get_candles(ticker, interval="15m", limit=50)
             df_4h = get_candles(ticker, interval="4h", limit=50)
@@ -86,7 +87,6 @@ def check_entry_conditions_with_profit():
             row_with_data["MACD Trend 15m"] = "Alcista" if macd_trend_15m else "Bajista"
             row_with_data["RSI_4h"] = round(rsi_4h, 2)
             row_with_data["MACD Trend 4h"] = "Alcista" if macd_trend_4h else "Bajista"
->>>>>>> eed3b64 (new-logic-candlesfit)
 
             if pd.notna(exit_price):
                 row_with_data["Profit Target"] = round((exit_price - entry_price) * quantity, 2)
@@ -111,12 +111,8 @@ def check_entry_conditions_with_profit():
         df_ready = pd.DataFrame(entries)
         df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
         print("✅ Archivo generado: tickers_ready_full.csv")
-<<<<<<< HEAD
-        print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "Results"]])
-=======
         print(df_ready[["Ticker", "Entry", "Current Price", "RSI_15m", "RSI_4h", "MACD Trend 15m", "MACD Trend 4h", "Unrealized PnL", "Results"]])
 
->>>>>>> eed3b64 (new-logic-candlesfit)
 
 if __name__ == "__main__":
     check_entry_conditions_with_profit()
