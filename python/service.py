@@ -100,7 +100,7 @@ else:
 
     # --- Trade Overview Table ---
     st.subheader("🧾 Trade Overview")
-    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "Volatility between entry and exit", "RSI", "MACD Trend", "Results"]
+    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price", "Volatility between entry and exit", "RSI", "MACD Trend", "Results"]
 
     if "Volatility between entry and exit" in filtered_df.columns:
         try:
