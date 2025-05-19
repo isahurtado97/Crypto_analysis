@@ -134,8 +134,8 @@ with tab1:
         styled_df = (
             filtered_df[cols_to_show]
             .style
-            .applymap(highlight_result, subset=["Results"])
-            .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
+            .map(highlight_result, subset=["Results"])
+            .map(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
         )
 
         st.dataframe(styled_df)
