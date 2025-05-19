@@ -6,3 +6,4 @@ requests
 numpy
 pytz
 ta
+matplotlib
