@@ -47,10 +47,10 @@ st.markdown(
     unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📈 Crypto Dashboard", "🗓️ Calendario Macroeconómico"])
+tab1, tab2, tab3 = st.tabs(["📈 Crypto Dashboard", "🗓️ Calendario Macroeconómico", "📣 Eventos Cripto (CoinMarketCal)"])
 
+# TAB 1: Crypto Dashboard
 with tab1:
-    # --- DATA LOADERS ---
     @st.cache_data(ttl=900)
     def load_main_data():
         return pd.read_csv("csv/tickers_ready_full.csv")
@@ -68,7 +68,6 @@ with tab1:
     else:
         df = load_main_data()
 
-        # --- Sidebar Filters ---
         st.sidebar.header("⚙️ Filters")
         tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
         result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
@@ -82,7 +81,6 @@ with tab1:
         filtered_df = filtered_df[(filtered_df["RSI_15m"] >= rsi_min) & (filtered_df["RSI_15m"] <= rsi_max) |
                                    (filtered_df["RSI_4h"] >= rsi_min) & (filtered_df["RSI_4h"] <= rsi_max)]
 
-        # --- Trade Overview Table ---
         st.subheader("🧾 Trade Overview")
         cols_to_show = [
             "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
@@ -131,7 +129,6 @@ with tab1:
 
         st.dataframe(styled_df)
 
-        # --- Export CSV Button ---
         st.markdown("### 💾 Export CSV")
         csv_export = filtered_df.to_csv(index=False).encode('utf-8')
         st.download_button(
@@ -141,7 +138,6 @@ with tab1:
             mime="text/csv"
         )
 
-        # --- Strategy Tables ---
         st.markdown("---")
         st.subheader("📈 Long-Term Trading Opportunities")
         long_term = filtered_df[
@@ -152,12 +148,7 @@ with tab1:
 
         st.markdown("### 💾 Export Long-Term Opportunities")
         long_csv = long_term.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Long-Term CSV",
-            data=long_csv,
-            file_name=f"long_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
+        st.download_button("Download Long-Term CSV", long_csv, file_name=f"long_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
 
         st.markdown("---")
         st.subheader("⚡ Short-Term Trading Opportunities")
@@ -169,14 +160,8 @@ with tab1:
 
         st.markdown("### 💾 Export Short-Term Opportunities")
         short_csv = short_term.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Short-Term CSV",
-            data=short_csv,
-            file_name=f"short_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
+        st.download_button("Download Short-Term CSV", short_csv, file_name=f"short_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
 
-        # --- Prediction Check Results ---
         checked_df = load_checked_data()
         if checked_df is not None:
             st.markdown("---")
@@ -186,10 +171,12 @@ with tab1:
         else:
             st.info("ℹ️ Prediction check results will appear here after the first 4-hour cycle.")
 
+# TAB 2: Calendario Macroeconómico
 with tab2:
     st.markdown("### 🗓️ Calendario Macroeconómico")
-    st.components.v1.iframe(
-        src="https://es.investing.com/economic-calendar/?timeZone=56",
-        height=600,
-        scrolling=True
-    )
+    st.components.v1.iframe("https://es.investing.com/economic-calendar/?timeZone=56", height=600, scrolling=True)
+
+# TAB 3: Eventos Cripto (CoinMarketCal)
+with tab3:
+    st.markdown("### 📣 Eventos Importantes de Criptomonedas")
+    st.components.v1.iframe("https://coinmarketcal.com/en/", height=700, scrolling=True)
