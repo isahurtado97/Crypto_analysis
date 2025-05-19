@@ -47,7 +47,12 @@ st.markdown(
     unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2, tab3 = st.tabs(["📈 Crypto Dashboard", "🗓️ Calendario Macroeconómico", "📣 Eventos Cripto (CoinMarketCal)"])
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📈 Crypto Dashboard",
+    "🗓️ Calendario Macroeconómico",
+    "📣 Eventos Cripto (CoinMarketCal)",
+    "💰 Calculadora de Take Profit"
+])
 
 # TAB 1: Crypto Dashboard
 with tab1:
@@ -201,3 +206,19 @@ with tab2:
 with tab3:
     st.markdown("### 📣 Eventos Importantes de Criptomonedas")
     st.markdown("[🔗 Abrir CoinMarketCal](https://coinmarketcal.com/en/)")
+
+# TAB 4: Calculadora de Take Profit
+with tab4:
+    st.markdown("### 💰 Calculadora de Salida con % de Ganancia")
+    entry_price = st.number_input("Precio de entrada (€ por unidad)", min_value=0.0, format="%f")
+    invested_amount = st.number_input("Inversión en euros", min_value=0.0, format="%f")
+    profit_percent = st.slider("% de ganancia esperada", min_value=0.5, max_value=10.0, value=2.0, step=0.1)
+
+    if entry_price > 0 and invested_amount > 0:
+        quantity = invested_amount / entry_price
+        target_exit_price = entry_price * (1 + profit_percent / 100)
+        expected_return = quantity * target_exit_price
+
+        st.success(f"🎯 Precio objetivo con +{profit_percent:.1f}%: {target_exit_price:.5f} €")
+        st.info(f"💰 Obtendrás: {quantity:.2f} unidades por {invested_amount:.2f} €")
+        st.success(f"💵 Valor de salida estimado: {expected_return:.2f} €")
