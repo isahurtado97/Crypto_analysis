@@ -49,9 +49,9 @@ st.markdown("---")
 
 tab1, tab2, tab3, tab4 = st.tabs([
     "📈 Crypto Dashboard",
+    "💰 Calculadora de Take Profit",
     "🗓️ Calendario Macroeconómico",
-    "📣 Eventos Cripto (CoinMarketCal)",
-    "💰 Calculadora de Take Profit"
+    "📣 Eventos Cripto (CoinMarketCal)"
 ])
 
 # TAB 1: Crypto Dashboard
@@ -94,6 +94,21 @@ with tab1:
     else:
         df = load_main_data()
 
+        # Key metrics
+        col1, col2, col3 = st.columns(3)
+        col1.metric("📊 Tickers cargados", len(df))
+
+        cest = pytz.timezone("Europe/Madrid")
+        last_run = datetime.fromtimestamp(os.path.getmtime(file_path)).astimezone(cest)
+        col2.metric("🕒 Última ejecución", last_run.strftime('%Y-%m-%d %H:%M:%S'))
+
+        try:
+            df["Volatility %"] = df["Volatility between entry and exit"].astype(str).str.replace("%", "").astype(float)
+            max_vol_row = df.loc[df["Volatility %"].idxmax()]
+            col3.metric("🔥 Máx. Volatilidad", f"{max_vol_row['Ticker']} ({max_vol_row['Volatility %']:.2f}%)")
+        except:
+            col3.metric("🔥 Máx. Volatilidad", "No disponible")
+
         st.sidebar.header("⚙️ Filters")
         tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
         result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
@@ -107,22 +122,11 @@ with tab1:
         filtered_df = filtered_df[(filtered_df["RSI_15m"] >= rsi_min) & (filtered_df["RSI_15m"] <= rsi_max) |
                                    (filtered_df["RSI_4h"] >= rsi_min) & (filtered_df["RSI_4h"] <= rsi_max)]
 
-        st.subheader("🧾 Trade Overview")
+        st.subheader(f"🧾 Trade Overview – {len(filtered_df)} resultados")
         cols_to_show = [
             "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
             "Volatility between entry and exit", "RSI_15m", "MACD Trend 15m", "RSI_4h", "MACD Trend 4h", "Results"
         ]
-
-        if "Volatility between entry and exit" in filtered_df.columns:
-            try:
-                filtered_df["Volatility %"] = (
-                    filtered_df["Volatility between entry and exit"]
-                    .astype(str)
-                    .str.replace("%", "")
-                    .astype(float)
-                )
-            except:
-                filtered_df["Volatility %"] = None
 
         def highlight_result(val):
             if val == "Profitable":
@@ -147,68 +151,12 @@ with tab1:
             .style
             .applymap(highlight_result, subset=["Results"])
             .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
-            .background_gradient(
-                cmap="YlGn", subset=["Volatility between entry and exit"],
-                gmap=filtered_df["Volatility %"] if "Volatility %" in filtered_df else None
-            )
         )
 
         st.dataframe(styled_df)
 
-        st.markdown("### 💾 Export CSV")
-        csv_export = filtered_df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download CSV",
-            data=csv_export,
-            file_name=f"filtered_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            mime="text/csv"
-        )
-
-        st.markdown("---")
-        st.subheader("📈 Long-Term Trading Opportunities")
-        long_term = filtered_df[
-            (filtered_df["RSI_4h"] < 30) &
-            (filtered_df["MACD Trend 4h"] == "Alcista")
-        ]
-        st.dataframe(long_term[cols_to_show])
-
-        st.markdown("### 💾 Export Long-Term Opportunities")
-        long_csv = long_term.to_csv(index=False).encode('utf-8')
-        st.download_button("Download Long-Term CSV", long_csv, file_name=f"long_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
-
-        st.markdown("---")
-        st.subheader("⚡ Short-Term Trading Opportunities")
-        short_term = filtered_df[
-            (filtered_df["RSI_15m"] < 30) &
-            (filtered_df["MACD Trend 15m"] == "Alcista")
-        ]
-        st.dataframe(short_term[cols_to_show])
-
-        st.markdown("### 💾 Export Short-Term Opportunities")
-        short_csv = short_term.to_csv(index=False).encode('utf-8')
-        st.download_button("Download Short-Term CSV", short_csv, file_name=f"short_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
-
-        checked_df = load_checked_data()
-        if checked_df is not None:
-            st.markdown("---")
-            st.subheader("📋 Prediction Check (Last 24h)")
-            checked_filtered = checked_df[checked_df["Ticker"].isin(filtered_df["Ticker"])]
-            st.dataframe(checked_filtered[["Ticker", "Results", "Trade Time"]])
-        else:
-            st.info("ℹ️ Prediction check results will appear here after the first 4-hour cycle.")
-
-# TAB 2: Calendario Macroeconómico
+# TAB 2: Calculadora Take Profit
 with tab2:
-    st.markdown("### 🗓️ Calendario Macroeconómico")
-    st.markdown("[🔗 Abrir Calendario en Investing.com](https://es.investing.com/economic-calendar/?timeZone=56)")
-
-# TAB 3: Eventos Cripto (CoinMarketCal)
-with tab3:
-    st.markdown("### 📣 Eventos Importantes de Criptomonedas")
-    st.markdown("[🔗 Abrir CoinMarketCal](https://coinmarketcal.com/en/)")
-
-# TAB 4: Calculadora de Take Profit
-with tab4:
     st.markdown("### 💰 Calculadora de Salida con % de Ganancia")
     entry_price = st.number_input("Precio de entrada (€ por unidad)", min_value=0.0, format="%f")
     invested_amount = st.number_input("Inversión en euros", min_value=0.0, format="%f")
@@ -222,3 +170,13 @@ with tab4:
         st.success(f"🎯 Precio objetivo con +{profit_percent:.1f}%: {target_exit_price:.5f} €")
         st.info(f"💰 Obtendrás: {quantity:.2f} unidades por {invested_amount:.2f} €")
         st.success(f"💵 Valor de salida estimado: {expected_return:.2f} €")
+
+# TAB 3: Calendario Macroeconómico
+with tab3:
+    st.markdown("### 🗓️ Calendario Macroeconómico")
+    st.markdown("[🔗 Abrir Calendario en Investing.com](https://es.investing.com/economic-calendar/?timeZone=56)")
+
+# TAB 4: Eventos Cripto
+with tab4:
+    st.markdown("### 📣 Eventos Importantes de Criptomonedas")
+    st.markdown("[🔗 Abrir CoinMarketCal](https://coinmarketcal.com/en/)")
