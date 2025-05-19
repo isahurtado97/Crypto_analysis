@@ -47,7 +47,7 @@ st.markdown(
     unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2, tab3 = st.tabs(["📊 Crypto Dashboard", "💰 Calculadora Take Profit", "📅 Eventos Cripto"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Crypto Dashboard", "💰 Calculadora Take Profit", "📅 Eventos Cripto", "📋 Verificar Reglas de Entrada"])
 
 # --- DATA LOADERS ---
 @st.cache_data(ttl=900)
@@ -145,7 +145,7 @@ with tab1:
         st.markdown("---")
         st.subheader("📈 Long-Term Trading Opportunities")
         long_term = filtered_df[
-            (filtered_df["RSI_4h"] < 40) &
+            (filtered_df["RSI_4h"] < 30) &
             (filtered_df["MACD Trend 4h"] == "Alcista")
         ]
         st.dataframe(long_term[cols_to_show])
@@ -162,7 +162,7 @@ with tab1:
         st.markdown("---")
         st.subheader("⚡ Short-Term Trading Opportunities")
         short_term = filtered_df[
-            (filtered_df["RSI_15m"] < 40) &
+            (filtered_df["RSI_15m"] < 30) &
             (filtered_df["MACD Trend 15m"] == "Alcista")
         ]
         st.dataframe(short_term[cols_to_show])
@@ -205,3 +205,27 @@ with tab3:
     st.markdown("### 📅 Eventos Importantes que Afectan a las Criptomonedas")
     st.markdown("Consulta CoinMarketCal para conocer próximos eventos relevantes que pueden impactar el mercado cripto.")
     st.markdown("[🔗 Ver en CoinMarketCal](https://coinmarketcal.com/en/)")
+
+with tab4:
+    st.markdown("### 📋 Verificar Reglas de Trading Personalizadas")
+
+    rsi_4h = st.number_input("RSI 4h", min_value=0, max_value=100)
+    macd_4h = st.selectbox("MACD 4h", ["Alcista", "Bajista"])
+    rsi_15m = st.number_input("RSI 15m", min_value=0, max_value=100)
+    macd_15m = st.selectbox("MACD 15m", ["Alcista", "Bajista"])
+    current_price = st.number_input("Precio actual")
+    low_price = st.number_input("Nivel bajo frecuente")
+
+    if st.button("Verificar estrategia"):
+        long_ok = (rsi_4h < 30 and macd_4h == "Alcista" and current_price <= low_price)
+        short_ok = (rsi_15m < 30 and macd_15m == "Alcista" and current_price <= low_price)
+
+        if long_ok:
+            st.success("✅ Cumple condiciones para estrategia Long-Term")
+        else:
+            st.info("❌ No cumple condiciones Long-Term")
+
+        if short_ok:
+            st.success("✅ Cumple condiciones para estrategia Short-Term")
+        else:
+            st.info("❌ No cumple condiciones Short-Term")
