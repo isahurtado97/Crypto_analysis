@@ -14,11 +14,11 @@ import numpy as np
 def background_scheduler():
     time.sleep(60)
     while True:
-        print("🔁 Running 30-minute analysis...")
+        print("🔁 Running 15-minute analysis...")
         try:
             subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
             subprocess.run([sys.executable, "python/check_entry.py"], check=True)
-            print("✅ 30-minute analysis completed.")
+            print("✅ 15-minute analysis completed.")
         except subprocess.CalledProcessError as e:
             print(f"❌ Error running analysis scripts: {e}")
 
@@ -47,30 +47,6 @@ st.markdown(
     unsafe_allow_html=True)
 st.markdown("---")
 
-# --- Manual EXECUTION buttons ---
-col_a, col_b = st.columns(2)
-
-if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
-    with st.spinner("Running analysis..."):
-        try:
-            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
-            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
-            st.success("✅ Analysis completed successfully.")
-            st.cache_data.clear()
-        except Exception as e:
-            st.error(f"❌ Error: {e}")
-
-if col_b.button("📊 Run 24h Prediction Check Now"):
-    with st.spinner("Running prediction check..."):
-        try:
-            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
-            st.success("✅ Prediction check completed.")
-            st.cache_data.clear()
-        except Exception as e:
-            st.error(f"❌ Error: {e}")
-
-st.markdown("---")
-
 # --- DATA LOADERS ---
 @st.cache_data(ttl=900)
 def load_main_data():
@@ -93,14 +69,22 @@ else:
     st.sidebar.header("⚙️ Filters")
     tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
     result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
+    rsi_min = st.sidebar.slider("RSI Minimum (any)", min_value=0, max_value=100, value=0)
+    rsi_max = st.sidebar.slider("RSI Maximum (any)", min_value=0, max_value=100, value=100)
 
     filtered_df = df[df["Ticker"].isin(tickers)]
     if result_filter != "All":
         filtered_df = filtered_df[filtered_df["Results"] == result_filter]
 
+    filtered_df = filtered_df[(filtered_df["RSI_15m"] >= rsi_min) & (filtered_df["RSI_15m"] <= rsi_max) |
+                               (filtered_df["RSI_4h"] >= rsi_min) & (filtered_df["RSI_4h"] <= rsi_max)]
+
     # --- Trade Overview Table ---
     st.subheader("🧾 Trade Overview")
-    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price", "Volatility between entry and exit", "RSI", "MACD Trend", "Results"]
+    cols_to_show = [
+        "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
+        "Volatility between entry and exit", "RSI_15m", "MACD Trend 15m", "RSI_4h", "MACD Trend 4h", "Results"
+    ]
 
     if "Volatility between entry and exit" in filtered_df.columns:
         try:
@@ -120,10 +104,22 @@ else:
             return "background-color: #fed7d7"
         return ""
 
+    def highlight_rsi(val):
+        try:
+            v = float(val)
+            if v > 70:
+                return "background-color: #fdd"
+            elif v < 30:
+                return "background-color: #dfd"
+        except:
+            return ""
+        return ""
+
     styled_df = (
         filtered_df[cols_to_show]
         .style
         .applymap(highlight_result, subset=["Results"])
+        .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
         .background_gradient(
             cmap="YlGn", subset=["Volatility between entry and exit"],
             gmap=filtered_df["Volatility %"] if "Volatility %" in filtered_df else None
@@ -142,54 +138,12 @@ else:
         mime="text/csv"
     )
 
-    # --- Key Metrics ---
-    st.subheader("📊 Key Metrics")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Tickers", len(filtered_df))
-
-    utc_time = datetime.fromtimestamp(os.path.getmtime(file_path))
-    cest = pytz.timezone("Europe/Madrid")
-    last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S')
-    col2.metric("Last Update", last_run_cest)
-
-    if "Volatility %" in filtered_df.columns:
-        try:
-            max_row = filtered_df.loc[filtered_df["Volatility %"].idxmax()]
-            col3.metric("Max Volatility", f"{max_row['Ticker']}", f"{max_row['Volatility %']:.2f}%")
-        except:
-            col3.metric("Max Volatility", "Error", "⚠️")
-
-    # --- Ticker Specific Details ---
-    if len(tickers) == 1:
-        st.markdown("---")
-        st.subheader(f"🔎 Details for `{tickers[0]}`")
-        info = filtered_df.iloc[0]
-        st.markdown(f"""
-        - **Average Price:** `{info['Average Price']}`
-        - **Entry Price:** `{info['Entry']}`
-        - **Exit Price:** `{info['Exit']}`
-        - **Current Price:** `{info['Current Price']}`
-        - **RSI:** `{info.get('RSI', 'N/A')}`
-        - **MACD Trend:** `{info.get('MACD Trend', 'N/A')}`
-        """)
-
-        st.subheader("📊 Price Comparison")
-        fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=[info['Average Price'], info['Entry'], info['Exit'], info['Current Price']],
-            y=["Average", "Entry", "Exit", "Current"],
-            orientation='h',
-            marker_color=["#2E86AB", "#EF553B", "#00CC96", "#9B59B6"]
-        ))
-        fig.update_layout(height=350, margin=dict(l=100, r=40, t=40, b=40))
-        st.plotly_chart(fig, use_container_width=True)
-
     # --- Strategy Tables ---
     st.markdown("---")
     st.subheader("📈 Long-Term Trading Opportunities")
     long_term = filtered_df[
-        (filtered_df["RSI"] < 40) &
-        (filtered_df["MACD Trend"] == "Alcista")
+        (filtered_df["RSI_4h"] < 30) &
+        (filtered_df["MACD Trend 4h"] == "Alcista")
     ]
     st.dataframe(long_term[cols_to_show])
 
@@ -205,8 +159,8 @@ else:
     st.markdown("---")
     st.subheader("⚡ Short-Term Trading Opportunities")
     short_term = filtered_df[
-        (filtered_df["RSI"] < 40) &
-        (filtered_df["MACD Trend"] == "Alcista")
+        (filtered_df["RSI_15m"] < 30) &
+        (filtered_df["MACD Trend 15m"] == "Alcista")
     ]
     st.dataframe(short_term[cols_to_show])
 

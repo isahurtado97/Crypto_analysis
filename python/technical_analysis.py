@@ -1,22 +1,26 @@
+# --- technical_analysis.py ---
 import requests
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 INVESTED_MONEY = 500
+
 
 def get_all_tickers():
     res = requests.get(f"{BITVAVO_URL}/markets")
     return [m['market'] for m in res.json()]
 
-def get_1min_candles(ticker):
-    res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": "5m", "limit": 60})
+
+def get_candles(ticker, interval="5m", limit=60):
+    res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": interval, "limit": limit})
     candles = res.json()
     df = pd.DataFrame(candles, columns=["timestamp", "open", "high", "low", "close", "volume"])
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
-    df[["open","high","low","close","volume"]] = df[["open","high","low","close","volume"]].astype(float)
+    df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
     return df.sort_values("timestamp").reset_index(drop=True)
+
 
 def frequent_levels(prices, bins=20):
     hist, edges = np.histogram(prices, bins=bins)
@@ -26,12 +30,14 @@ def frequent_levels(prices, bins=20):
     high_level = round((edges[idx_high] + edges[idx_high+1])/2, 4)
     return low_level, high_level
 
+
 def direction(df, idx, period=5):
     if idx < period:
         return None
     ma_prev = df['close'].iloc[idx-period:idx].mean()
     price_now = df['close'].iloc[idx]
     return "up" if price_now > ma_prev else "down"
+
 
 def trade_with_direction(df):
     low_level, high_level = frequent_levels(df['close'])
@@ -58,6 +64,7 @@ def trade_with_direction(df):
     else:
         return None, None, None, None
 
+
 def simulate_all():
     now = datetime.now().strftime("%Y-%m-%d")
     tickers = get_all_tickers()
@@ -65,7 +72,7 @@ def simulate_all():
 
     for ticker in tickers:
         try:
-            df = get_1min_candles(ticker)
+            df = get_candles(ticker, interval="5m", limit=60)
             if len(df) < 10:
                 skipped.append((ticker, "Insufficient data"))
                 continue
@@ -110,6 +117,7 @@ def simulate_all():
 
     print(f"✅ {len(results)} tickers procesados correctamente.")
     print(f"⚠️ {len(skipped)} tickers omitidos. Revisa 'directional_frequent_levels_skipped.csv'.")
+
 
 if __name__ == "__main__":
     simulate_all()

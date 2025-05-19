@@ -1,8 +1,9 @@
+# --- check_entry.py ---
 import pandas as pd
 import requests
 from datetime import datetime
 import ta
-from technical_analysis import get_1min_candles  # Asegúrate que este método esté accesible
+from technical_analysis import get_candles
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 LOG_FILE = "error_log.txt"
@@ -61,25 +62,31 @@ def check_entry_conditions_with_profit():
         entry_price = row["Entry"]
         quantity = row["Quantity"]
         exit_price = row.get("Exit", None)
-
         current_price = get_current_price(ticker)
         if current_price is None:
             continue
 
-        df_candles = get_1min_candles(ticker)
-        if df_candles is None or df_candles.empty:
+        try:
+            df_15m = get_candles(ticker, interval="15m", limit=50)
+            df_4h = get_candles(ticker, interval="4h", limit=50)
+            df_15m = compute_indicators(df_15m)
+            df_4h = compute_indicators(df_4h)
+            rsi_15m = df_15m["rsi"].dropna().iloc[-1]
+            macd_trend_15m = df_15m["macd_trend"].dropna().iloc[-1]
+            rsi_4h = df_4h["rsi"].dropna().iloc[-1]
+            macd_trend_4h = df_4h["macd_trend"].dropna().iloc[-1]
+        except Exception as e:
+            log_error(f"{ticker} – Error en indicadores: {e}")
             continue
 
-        df_candles = compute_indicators(df_candles)
-        latest_rsi = df_candles["rsi"].dropna().iloc[-1]
-        latest_macd_trend = df_candles["macd_trend"].dropna().iloc[-1]
-
-        # Condición de entrada
+        # Condición de entrada: precio actual cercano al nivel de entrada simulado
         if current_price <= entry_price * 1.005:
             row_with_data = row.copy()
             row_with_data["Current Price"] = round(current_price, 8)
-            row_with_data["RSI"] = round(latest_rsi, 2)
-            row_with_data["MACD Trend"] = "Alcista" if latest_macd_trend else "Bajista"
+            row_with_data["RSI_15m"] = round(rsi_15m, 2)
+            row_with_data["MACD Trend 15m"] = "Alcista" if macd_trend_15m else "Bajista"
+            row_with_data["RSI_4h"] = round(rsi_4h, 2)
+            row_with_data["MACD Trend 4h"] = "Alcista" if macd_trend_4h else "Bajista"
 
             if pd.notna(exit_price):
                 row_with_data["Profit Target"] = round((exit_price - entry_price) * quantity, 2)
@@ -104,7 +111,7 @@ def check_entry_conditions_with_profit():
         df_ready = pd.DataFrame(entries)
         df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
         print("✅ Archivo generado: tickers_ready_full.csv")
-        print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "RSI", "MACD Trend", "Results"]])
+        print(df_ready[["Ticker", "Entry", "Current Price", "RSI_15m", "RSI_4h", "MACD Trend 15m", "MACD Trend 4h", "Unrealized PnL", "Results"]])
 
 
 if __name__ == "__main__":
