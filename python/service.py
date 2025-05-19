@@ -207,25 +207,28 @@ with tab3:
     st.markdown("[🔗 Ver en CoinMarketCal](https://coinmarketcal.com/en/)")
 
 with tab4:
-    st.markdown("### 📋 Verificar Reglas de Trading Personalizadas")
+    st.markdown("### 📋 Verificar Reglas de Entrada para Trading")
 
-    rsi_4h = st.number_input("RSI 4h", min_value=0, max_value=100)
-    macd_4h = st.selectbox("MACD 4h", ["Alcista", "Bajista"])
-    rsi_15m = st.number_input("RSI 15m", min_value=0, max_value=100)
-    macd_15m = st.selectbox("MACD 15m", ["Alcista", "Bajista"])
-    current_price = st.number_input("Precio actual")
-    low_price = st.number_input("Nivel bajo frecuente")
+    strategy = st.selectbox("Selecciona estrategia:", ["Long-Term", "Short-Term"])
 
-    if st.button("Verificar estrategia"):
-        long_ok = (rsi_4h < 30 and macd_4h == "Alcista" and current_price <= low_price)
-        short_ok = (rsi_15m < 30 and macd_15m == "Alcista" and current_price <= low_price)
+    entry_price = st.number_input("Precio de entrada")
+    low_price = st.number_input("Precio más bajo frecuente")
+    macd = st.selectbox("MACD", ["Alcista", "Bajista"])
 
-        if long_ok:
-            st.success("✅ Cumple condiciones para estrategia Long-Term")
-        else:
-            st.info("❌ No cumple condiciones Long-Term")
+    if strategy == "Long-Term":
+        rsi_4h = st.number_input("RSI 4h", min_value=0, max_value=100)
+        if st.button("Verificar Long-Term"):
+            price_diff_pct = ((entry_price - low_price) / low_price) * 100 if low_price > 0 else 0
+            if rsi_4h < 30 and macd == "Alcista" and price_diff_pct > 1:
+                st.success("✅ Cumple condiciones para estrategia Long-Term")
+            else:
+                st.error("❌ No cumple condiciones para estrategia Long-Term")
 
-        if short_ok:
-            st.success("✅ Cumple condiciones para estrategia Short-Term")
-        else:
-            st.info("❌ No cumple condiciones Short-Term")
+    if strategy == "Short-Term":
+        rsi_15m = st.number_input("RSI 15m", min_value=0, max_value=100)
+        if st.button("Verificar Short-Term"):
+            price_diff_pct = ((entry_price - low_price) / low_price) * 100 if low_price > 0 else 0
+            if rsi_15m < 30 and macd == "Alcista" and price_diff_pct > 1:
+                st.success("✅ Cumple condiciones para estrategia Short-Term")
+            else:
+                st.error("❌ No cumple condiciones para estrategia Short-Term")
