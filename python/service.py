@@ -51,6 +51,27 @@ tab1, tab2, tab3 = st.tabs(["📈 Crypto Dashboard", "🗓️ Calendario Macroec
 
 # TAB 1: Crypto Dashboard
 with tab1:
+    col_a, col_b = st.columns(2)
+
+    if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
+        with st.spinner("Running analysis..."):
+            try:
+                subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+                subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+                st.success("✅ Analysis completed successfully.")
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+
+    if col_b.button("📊 Run 24h Prediction Check Now"):
+        with st.spinner("Running prediction check..."):
+            try:
+                subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+                st.success("✅ Prediction check completed.")
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+
     @st.cache_data(ttl=900)
     def load_main_data():
         return pd.read_csv("csv/tickers_ready_full.csv")
@@ -174,9 +195,9 @@ with tab1:
 # TAB 2: Calendario Macroeconómico
 with tab2:
     st.markdown("### 🗓️ Calendario Macroeconómico")
-    st.components.v1.iframe("https://es.investing.com/economic-calendar/?timeZone=56", height=600, scrolling=True)
+    st.markdown("[🔗 Abrir Calendario en Investing.com](https://es.investing.com/economic-calendar/?timeZone=56)")
 
 # TAB 3: Eventos Cripto (CoinMarketCal)
 with tab3:
     st.markdown("### 📣 Eventos Importantes de Criptomonedas")
-    st.components.v1.iframe("https://coinmarketcal.com/en/", height=700, scrolling=True)
+    st.markdown("[🔗 Abrir CoinMarketCal](https://coinmarketcal.com/en/)")
