@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import pytz
 import subprocess
 import sys
+import numpy as np
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
@@ -105,27 +106,28 @@ else:
         try:
             filtered_df["Volatility %"] = (
                 filtered_df["Volatility between entry and exit"]
+                .astype(str)
                 .str.replace("%", "")
                 .astype(float)
             )
         except:
             filtered_df["Volatility %"] = None
 
-    def highlight_volatility(val):
-        try:
-            v = float(val.replace("%", "")) if isinstance(val, str) else float(val)
-            if v >= 3:
-                return "background-color: #d4edda"
-        except:
-            return ""
+    def highlight_result(val):
+        if val == "Profitable":
+            return "background-color: #c6f6d5"
+        elif val == "At loss":
+            return "background-color: #fed7d7"
         return ""
 
-    styled_df = filtered_df[cols_to_show].style.applymap(
-        lambda val: "background-color: #c6f6d5" if val == "Profitable" else (
-            "background-color: #fed7d7" if val == "At loss" else ""),
-        subset=["Results"]
-    ).background_gradient(
-        cmap="YlGn", subset=["Volatility between entry and exit"]
+    styled_df = (
+        filtered_df[cols_to_show]
+        .style
+        .applymap(highlight_result, subset=["Results"])
+        .background_gradient(
+            cmap="YlGn", subset=["Volatility between entry and exit"],
+            gmap=filtered_df["Volatility %"] if "Volatility %" in filtered_df else None
+        )
     )
 
     st.dataframe(styled_df)
