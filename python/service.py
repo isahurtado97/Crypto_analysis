@@ -47,7 +47,7 @@ st.markdown(
     unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📊 Crypto Dashboard", "💰 Calculadora Take Profit"])
+tab1, tab2, tab3 = st.tabs(["📊 Crypto Dashboard", "💰 Calculadora Take Profit", "📅 Eventos Cripto"])
 
 # --- DATA LOADERS ---
 @st.cache_data(ttl=900)
@@ -145,7 +145,7 @@ with tab1:
         st.markdown("---")
         st.subheader("📈 Long-Term Trading Opportunities")
         long_term = filtered_df[
-            (filtered_df["RSI_4h"] < 40) &
+            (filtered_df["RSI_4h"] < 30) &
             (filtered_df["MACD Trend 4h"] == "Alcista")
         ]
         st.dataframe(long_term[cols_to_show])
@@ -162,7 +162,7 @@ with tab1:
         st.markdown("---")
         st.subheader("⚡ Short-Term Trading Opportunities")
         short_term = filtered_df[
-            (filtered_df["RSI_15m"] < 40) &
+            (filtered_df["RSI_15m"] < 30) &
             (filtered_df["MACD Trend 15m"] == "Alcista")
         ]
         st.dataframe(short_term[cols_to_show])
@@ -200,3 +200,8 @@ with tab2:
         st.success(f"🎯 Precio objetivo con +{profit_percent:.1f}%: {target_exit_price:.5f} €")
         st.info(f"💰 Obtendrás: {quantity:.2f} unidades por {invested_amount:.2f} €")
         st.success(f"💵 Valor de salida estimado: {expected_return:.2f} €")
+
+with tab3:
+    st.markdown("### 📅 Eventos Importantes que Afectan a las Criptomonedas")
+    st.markdown("Consulta CoinMarketCal para conocer próximos eventos relevantes que pueden impactar el mercado cripto.")
+    st.markdown("[🔗 Ver en CoinMarketCal](https://coinmarketcal.com/en/)")
