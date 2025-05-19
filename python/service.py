@@ -5,13 +5,13 @@ import time
 import threading
 from datetime import datetime
 import plotly.graph_objects as go
-import pytz  
+import pytz
 import subprocess
 import sys
 
 # --- BACKGROUND SCHEDULER ---
 def background_scheduler():
-    time.sleep(60)  # Wait to ensure dependencies are loaded in Streamlit Cloud
+    time.sleep(60)
     while True:
         print("🔁 Running 15-minute analysis...")
         try:
@@ -30,7 +30,7 @@ def background_scheduler():
             except subprocess.CalledProcessError as e:
                 print(f"❌ Error running prediction script: {e}")
 
-        time.sleep(1800)  # Sleep for 15 minutes
+        time.sleep(1800)
 
 # --- Run scheduler only once ---
 if "scheduler_started" not in st.session_state:
@@ -39,9 +39,11 @@ if "scheduler_started" not in st.session_state:
 
 # --- PAGE LAYOUT ---
 st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
-st.markdown("## 📈 Crypto Entry-Exit Dashboard", unsafe_allow_html=False)
-st.markdown("*AI analysis of crypto trade signals*", unsafe_allow_html=False)
-st.markdown("<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>", unsafe_allow_html=True)
+st.markdown("## 📈 Crypto Entry-Exit Dashboard")
+st.markdown("*AI analysis of crypto trade signals*")
+st.markdown(
+    "<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>",
+    unsafe_allow_html=True)
 st.markdown("---")
 
 # --- Manual EXECUTION buttons ---
@@ -78,7 +80,6 @@ def load_checked_data():
     path = "csv/tickers_ready_24h_checked.csv"
     return pd.read_csv(path) if os.path.exists(path) else None
 
-# --- MAIN LOGIC ---
 file_path = "csv/tickers_ready_full.csv"
 
 if not os.path.exists(file_path):
@@ -96,15 +97,16 @@ else:
     if result_filter != "All":
         filtered_df = filtered_df[filtered_df["Results"] == result_filter]
 
-    # --- Trade Table ---
+    # --- Trade Overview Table ---
     st.subheader("🧾 Trade Overview")
-    st.dataframe(filtered_df.style.applymap(
+    cols_to_show = ["Date", "Ticker", "Average Price", "Entry", "Exit", "RSI", "MACD Trend", "Results"]
+    st.dataframe(filtered_df[cols_to_show].style.applymap(
         lambda val: "background-color: #c6f6d5" if val == "Profitable" else (
             "background-color: #fed7d7" if val == "At loss" else ""),
         subset=["Results"]
     ))
 
-    # --- Export Button ---
+    # --- Export CSV Button ---
     st.markdown("### 💾 Export CSV")
     csv_export = filtered_df.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -119,7 +121,6 @@ else:
     col1, col2, col3 = st.columns(3)
     col1.metric("Tickers", len(filtered_df))
 
-    # Metric 2: Last Update in CEST
     utc_time = datetime.fromtimestamp(os.path.getmtime(file_path))
     cest = pytz.timezone("Europe/Madrid")
     last_run_cest = utc_time.replace(tzinfo=pytz.utc).astimezone(cest).strftime('%Y-%m-%d %H:%M:%S')
@@ -133,7 +134,7 @@ else:
         except:
             col3.metric("Max Volatility", "Error", "⚠️")
 
-    # --- Ticker Details ---
+    # --- Ticker Specific Details ---
     if len(tickers) == 1:
         st.markdown("---")
         st.subheader(f"🔎 Details for `{tickers[0]}`")
@@ -143,9 +144,10 @@ else:
         - **Entry Price:** `{info['Entry']}`
         - **Exit Price:** `{info['Exit']}`
         - **Current Price:** `{info['Current Price']}`
+        - **RSI:** `{info.get('RSI', 'N/A')}`
+        - **MACD Trend:** `{info.get('MACD Trend', 'N/A')}`
         """)
 
-        # Chart
         st.subheader("📊 Price Comparison")
         fig = go.Figure()
         fig.add_trace(go.Bar(
@@ -156,6 +158,41 @@ else:
         ))
         fig.update_layout(height=350, margin=dict(l=100, r=40, t=40, b=40))
         st.plotly_chart(fig, use_container_width=True)
+
+    # --- Strategy Tables ---
+    st.markdown("---")
+    st.subheader("📈 Long-Term Trading Opportunities")
+    long_term = filtered_df[
+        (filtered_df["RSI"] < 30) &
+        (filtered_df["MACD Trend"] == "Alcista")
+    ]
+    st.dataframe(long_term[cols_to_show])
+
+    st.markdown("### 💾 Export Long-Term Opportunities")
+    long_csv = long_term.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Long-Term CSV",
+        data=long_csv,
+        file_name=f"long_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        mime="text/csv"
+    )
+
+    st.markdown("---")
+    st.subheader("⚡ Short-Term Trading Opportunities")
+    short_term = filtered_df[
+        (filtered_df["RSI"] < 30) &
+        (filtered_df["MACD Trend"] == "Alcista")
+    ]
+    st.dataframe(short_term[cols_to_show])
+
+    st.markdown("### 💾 Export Short-Term Opportunities")
+    short_csv = short_term.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Short-Term CSV",
+        data=short_csv,
+        file_name=f"short_term_trades_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        mime="text/csv"
+    )
 
     # --- Prediction Check Results ---
     checked_df = load_checked_data()

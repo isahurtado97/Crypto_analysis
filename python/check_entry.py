@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 from datetime import datetime
+import ta
+from technical_analysis import get_1min_candles  # Asegúrate que este método esté accesible
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 LOG_FILE = "error_log.txt"
@@ -40,6 +42,16 @@ def get_current_price(ticker):
         return None
 
 
+def compute_indicators(df):
+    df = df.copy()
+    df["rsi"] = ta.momentum.RSIIndicator(close=df["close"]).rsi()
+    macd = ta.trend.MACD(close=df["close"])
+    df["macd"] = macd.macd()
+    df["macd_signal"] = macd.macd_signal()
+    df["macd_trend"] = df["macd"] > df["macd_signal"]
+    return df
+
+
 def check_entry_conditions_with_profit():
     df_trades = pd.read_csv("csv/directional_frequent_levels.csv")
     entries = []
@@ -54,22 +66,29 @@ def check_entry_conditions_with_profit():
         if current_price is None:
             continue
 
-        # Condición de entrada: precio actual <= entry * 1.005
+        df_candles = get_1min_candles(ticker)
+        if df_candles is None or df_candles.empty:
+            continue
+
+        df_candles = compute_indicators(df_candles)
+        latest_rsi = df_candles["rsi"].dropna().iloc[-1]
+        latest_macd_trend = df_candles["macd_trend"].dropna().iloc[-1]
+
+        # Condición de entrada
         if current_price <= entry_price * 1.005:
             row_with_data = row.copy()
             row_with_data["Current Price"] = round(current_price, 8)
+            row_with_data["RSI"] = round(latest_rsi, 2)
+            row_with_data["MACD Trend"] = "Alcista" if latest_macd_trend else "Bajista"
 
-            # Ganancia si se ejecuta el trade según simulación
             if pd.notna(exit_price):
                 row_with_data["Profit Target"] = round((exit_price - entry_price) * quantity, 2)
             else:
                 row_with_data["Profit Target"] = ""
 
-            # Ganancia o pérdida si se ejecuta ahora mismo
             unrealized_pnl = round((current_price - entry_price) * quantity, 2)
             row_with_data["Unrealized PnL"] = unrealized_pnl
 
-            # Resultado textual
             if unrealized_pnl > 0:
                 row_with_data["Results"] = "Profitable"
             elif unrealized_pnl < 0:
@@ -85,7 +104,7 @@ def check_entry_conditions_with_profit():
         df_ready = pd.DataFrame(entries)
         df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
         print("✅ Archivo generado: tickers_ready_full.csv")
-        print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "Results"]])
+        print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "RSI", "MACD Trend", "Results"]])
 
 
 if __name__ == "__main__":
