@@ -14,11 +14,11 @@ import numpy as np
 def background_scheduler():
     time.sleep(60)
     while True:
-        print("🔁 Running 15-minute analysis...")
+        print("🔁 Running 30-minute analysis...")
         try:
             subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
             subprocess.run([sys.executable, "python/check_entry.py"], check=True)
-            print("✅ 15-minute analysis completed.")
+            print("✅ 30-minute analysis completed.")
         except subprocess.CalledProcessError as e:
             print(f"❌ Error running analysis scripts: {e}")
 
@@ -188,7 +188,7 @@ else:
     st.markdown("---")
     st.subheader("📈 Long-Term Trading Opportunities")
     long_term = filtered_df[
-        (filtered_df["RSI"] < 30) &
+        (filtered_df["RSI"] < 40) &
         (filtered_df["MACD Trend"] == "Alcista")
     ]
     st.dataframe(long_term[cols_to_show])
@@ -205,7 +205,7 @@ else:
     st.markdown("---")
     st.subheader("⚡ Short-Term Trading Opportunities")
     short_term = filtered_df[
-        (filtered_df["RSI"] < 30) &
+        (filtered_df["RSI"] < 40) &
         (filtered_df["MACD Trend"] == "Alcista")
     ]
     st.dataframe(short_term[cols_to_show])
