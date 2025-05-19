@@ -1,118 +1,186 @@
-# --- check_entry.py ---
+import streamlit as st
 import pandas as pd
-import requests
+import os
+import time
+import threading
 from datetime import datetime
-import ta
-from technical_analysis import get_candles
+import plotly.graph_objects as go
+import pytz
+import subprocess
+import sys
+import numpy as np
 
-BITVAVO_URL = "https://api.bitvavo.com/v2"
-LOG_FILE = "error_log.txt"
+# --- BACKGROUND SCHEDULER ---
+def background_scheduler():
+    time.sleep(60)
+    while True:
+        print("🔁 Running 15-minute analysis...")
+        try:
+            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+            print("✅ 15-minute analysis completed.")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Error running analysis scripts: {e}")
 
+        now = int(time.time())
+        if now % (30 * 60) < 60:
+            print("🔁 Running 4-hour prediction check...")
+            try:
+                subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+                print("✅ 4-hour prediction check completed.")
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Error running prediction script: {e}")
 
-def log_error(message):
-    with open(LOG_FILE, "a") as log:
-        log.write(f"{datetime.now().isoformat()} - {message}\n")
+        time.sleep(1800)
 
+# --- Run scheduler only once ---
+if "scheduler_started" not in st.session_state:
+    threading.Thread(target=background_scheduler, daemon=True).start()
+    st.session_state.scheduler_started = True
 
-def is_valid_market(ticker):
-    try:
-        res = requests.get(f"{BITVAVO_URL}/markets")
-        res.raise_for_status()
-        markets = res.json()
-        return ticker in [m['market'] for m in markets]
-    except Exception as e:
-        log_error(f"Error checking market {ticker}: {e}")
-        return False
+# --- PAGE LAYOUT ---
+st.set_page_config(page_title="Crypto Entry Dashboard", layout="wide")
+st.markdown("## 📈 Crypto Entry-Exit Dashboard")
+st.markdown("*AI analysis of crypto trade signals*")
+st.markdown(
+    "<p style='text-align: center; color: #999999; font-size: 0.9em;'>🚨 Investing in cryptocurrencies carries risk. This dashboard is for informational purposes only and does not constitute financial advice.</p>",
+    unsafe_allow_html=True)
+st.markdown("---")
 
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📈 Crypto Dashboard",
+    "💰 Calculadora de Take Profit",
+    "🗓️ Calendario Macroeconómico",
+    "📣 Eventos Cripto (CoinMarketCal)"
+])
 
-def get_current_price(ticker):
-    if not is_valid_market(ticker):
-        msg = f"{ticker} no es un mercado válido en Bitvavo."
-        print(f"❌ {msg}")
-        log_error(msg)
-        return None
+# TAB 1: Crypto Dashboard
+with tab1:
+    col_a, col_b = st.columns(2)
 
-    url = f"{BITVAVO_URL}/ticker/price?market={ticker}"
-    try:
-        res = requests.get(url)
-        res.raise_for_status()
-        return float(res.json()['price'])
-    except Exception as e:
-        print(f"⚠️ Error con {ticker}: {e}")
-        log_error(f"{ticker} – {e}")
-        return None
+    if col_a.button("🚀 Run Technical Analysis + Entry Check Now"):
+        with st.spinner("Running analysis..."):
+            try:
+                subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+                subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+                st.success("✅ Analysis completed successfully.")
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
 
+    if col_b.button("📊 Run 24h Prediction Check Now"):
+        with st.spinner("Running prediction check..."):
+            try:
+                subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+                st.success("✅ Prediction check completed.")
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
 
-def compute_indicators(df):
-    df = df.copy()
-    df["rsi"] = ta.momentum.RSIIndicator(close=df["close"]).rsi()
-    macd = ta.trend.MACD(close=df["close"])
-    df["macd"] = macd.macd()
-    df["macd_signal"] = macd.macd_signal()
-    df["macd_trend"] = df["macd"] > df["macd_signal"]
-    return df
+    @st.cache_data(ttl=900)
+    def load_main_data():
+        return pd.read_csv("csv/tickers_ready_full.csv")
 
+    @st.cache_data(ttl=900)
+    def load_checked_data():
+        path = "csv/tickers_ready_24h_checked.csv"
+        return pd.read_csv(path) if os.path.exists(path) else None
 
-def check_entry_conditions_with_profit():
-    df_trades = pd.read_csv("csv/directional_frequent_levels.csv")
-    entries = []
+    file_path = "csv/tickers_ready_full.csv"
 
-    for _, row in df_trades.iterrows():
-        ticker = row["Ticker"]
-        entry_price = row["Entry"]
-        quantity = row["Quantity"]
-        exit_price = row.get("Exit", None)
-        current_price = get_current_price(ticker)
-        if current_price is None:
-            continue
+    if not os.path.exists(file_path):
+        st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
+        st.stop()
+    else:
+        df = load_main_data()
+
+        st.sidebar.header("⚙️ Filters")
+        tickers = st.sidebar.multiselect("Select tickers:", options=sorted(df["Ticker"].unique()), default=sorted(df["Ticker"].unique()))
+        result_filter = st.sidebar.selectbox("Filter by result:", ["All", "Profitable", "At loss", "Break-even"])
+        rsi_min = st.sidebar.slider("RSI Minimum (any)", min_value=0, max_value=100, value=0)
+        rsi_max = st.sidebar.slider("RSI Maximum (any)", min_value=0, max_value=100, value=100)
+
+        filtered_df = df[df["Ticker"].isin(tickers)]
+        if result_filter != "All":
+            filtered_df = filtered_df[filtered_df["Results"] == result_filter]
+
+        filtered_df = filtered_df[(filtered_df["RSI_15m"] >= rsi_min) & (filtered_df["RSI_15m"] <= rsi_max) |
+                                   (filtered_df["RSI_4h"] >= rsi_min) & (filtered_df["RSI_4h"] <= rsi_max)]
+
+        st.subheader(f"🧾 Trade Overview – {len(filtered_df)} resultados")
+        cols_to_show = [
+            "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
+            "Volatility between entry and exit", "RSI_15m", "MACD Trend 15m", "RSI_4h", "MACD Trend 4h", "Results"
+        ]
+
+        def highlight_result(val):
+            if val == "Profitable":
+                return "background-color: #c6f6d5"
+            elif val == "At loss":
+                return "background-color: #fed7d7"
+            return ""
+
+        def highlight_rsi(val):
+            try:
+                v = float(val)
+                if v > 70:
+                    return "background-color: #fdd"
+                elif v < 30:
+                    return "background-color: #dfd"
+            except:
+                return ""
+            return ""
+
+        styled_df = (
+            filtered_df[cols_to_show]
+            .style
+            .applymap(highlight_result, subset=["Results"])
+            .applymap(highlight_rsi, subset=["RSI_15m", "RSI_4h"])
+        )
+
+        st.dataframe(styled_df)
+
+        # Key metrics after overview
+        st.markdown("---")
+        st.subheader("📊 Métricas de la sesión")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("📊 Tickers cargados", len(df))
+
+        cest = pytz.timezone("Europe/Madrid")
+        last_run = datetime.fromtimestamp(os.path.getmtime(file_path)).astimezone(cest)
+        col2.metric("🕒 Última ejecución", last_run.strftime('%Y-%m-%d %H:%M:%S'))
 
         try:
-            df_15m = get_candles(ticker, interval="15m", limit=50)
-            df_4h = get_candles(ticker, interval="4h", limit=50)
-            df_15m = compute_indicators(df_15m)
-            df_4h = compute_indicators(df_4h)
-            rsi_15m = df_15m["rsi"].dropna().iloc[-1]
-            macd_trend_15m = df_15m["macd_trend"].dropna().iloc[-1]
-            rsi_4h = df_4h["rsi"].dropna().iloc[-1]
-            macd_trend_4h = df_4h["macd_trend"].dropna().iloc[-1]
-        except Exception as e:
-            log_error(f"{ticker} – Error en indicadores: {e}")
-            continue
+            df["Volatility %"] = df["Volatility between entry and exit"].astype(str).str.replace("%", "").astype(float)
+            max_vol_row = df.loc[df["Volatility %"].idxmax()]
+            col3.metric("🔥 Máx. Volatilidad", f"{max_vol_row['Ticker']} ({max_vol_row['Volatility %']:.2f}%)")
+        except:
+            col3.metric("🔥 Máx. Volatilidad", "No disponible")
 
-        # Condición de entrada: precio actual cercano al nivel de entrada simulado
-        if current_price <= entry_price * 1.005:
-            row_with_data = row.copy()
-            row_with_data["Current Price"] = round(current_price, 8)
-            row_with_data["RSI_15m"] = round(rsi_15m, 2)
-            row_with_data["MACD Trend 15m"] = "Alcista" if macd_trend_15m else "Bajista"
-            row_with_data["RSI_4h"] = round(rsi_4h, 2)
-            row_with_data["MACD Trend 4h"] = "Alcista" if macd_trend_4h else "Bajista"
+        # Long-Term Opportunities
+        st.markdown("---")
+        st.subheader("📈 Long-Term Trading Opportunities")
+        long_term = filtered_df[
+            (filtered_df["RSI_4h"] < 30) &
+            (filtered_df["MACD Trend 4h"] == "Alcista")
+        ]
+        st.dataframe(long_term[cols_to_show])
 
-            if pd.notna(exit_price):
-                row_with_data["Profit Target"] = round((exit_price - entry_price) * quantity, 2)
-            else:
-                row_with_data["Profit Target"] = ""
+        # Short-Term Opportunities
+        st.markdown("---")
+        st.subheader("⚡ Short-Term Trading Opportunities")
+        short_term = filtered_df[
+            (filtered_df["RSI_15m"] < 30) &
+            (filtered_df["MACD Trend 15m"] == "Alcista")
+        ]
+        st.dataframe(short_term[cols_to_show])
 
-            unrealized_pnl = round((current_price - entry_price) * quantity, 2)
-            row_with_data["Unrealized PnL"] = unrealized_pnl
-
-            if unrealized_pnl > 0:
-                row_with_data["Results"] = "Profitable"
-            elif unrealized_pnl < 0:
-                row_with_data["Results"] = "At loss"
-            else:
-                row_with_data["Results"] = "Break-even"
-
-            entries.append(row_with_data)
-
-    if not entries:
-        print("🚫 Ninguna crypto cumple condiciones de entrada ahora mismo.")
-    else:
-        df_ready = pd.DataFrame(entries)
-        df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
-        print("✅ Archivo generado: tickers_ready_full.csv")
-        print(df_ready[["Ticker", "Entry", "Current Price", "RSI_15m", "RSI_4h", "MACD Trend 15m", "MACD Trend 4h", "Unrealized PnL", "Results"]])
-
-
-if __name__ == "__main__":
-    check_entry_conditions_with_profit()
+        # Prediction Check Results
+        checked_df = load_checked_data()
+        if checked_df is not None:
+            st.markdown("---")
+            st.subheader("📋 Prediction Check (Last 24h)")
+            checked_filtered = checked_df[checked_df["Ticker"].isin(filtered_df["Ticker"])]
+            st.dataframe(checked_filtered[["Ticker", "Results", "Trade Time"]])
+        else:
+            st.info("ℹ️ Prediction check results will appear here after the first 4-hour cycle.")
