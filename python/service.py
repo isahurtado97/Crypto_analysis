@@ -61,6 +61,44 @@ def load_checked_data():
 
 file_path = "csv/tickers_ready_full.csv"
 
+st.markdown("### 🕒 Estado del Análisis")
+
+amsterdam_time = datetime.now(pytz.timezone("Europe/Amsterdam"))
+st.write(f"🗓️ Última ejecución (Amsterdam): `{amsterdam_time.strftime('%Y-%m-%d %H:%M:%S')}`")
+
+if os.path.exists(file_path):
+    df_status = load_main_data()
+    if "Volatility between entry and exit" in df_status.columns and not df_status.empty:
+        df_status["Volatility %"] = (
+            df_status["Volatility between entry and exit"]
+            .astype(str)
+            .str.replace("%", "")
+            .astype(float)
+        )
+        most_volatile = df_status.loc[df_status["Volatility %"].idxmax()]
+        st.write(f"📈 Ticker más volátil: `{most_volatile['Ticker']}` con `{most_volatile['Volatility between entry and exit']}`")
+    st.write(f"🔢 Total de tickers en tabla: `{len(df_status)}`")
+else:
+    st.info("⏳ Esperando resultados iniciales para mostrar estadísticas.")
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("🔁 Ejecutar análisis manual"):
+        try:
+            subprocess.run([sys.executable, "python/technical_analysis.py"], check=True)
+            subprocess.run([sys.executable, "python/check_entry.py"], check=True)
+            st.success("✅ Análisis técnico ejecutado correctamente.")
+        except subprocess.CalledProcessError as e:
+            st.error(f"❌ Error al ejecutar análisis: {e}")
+
+with col2:
+    if st.button("📊 Ejecutar predicción manual"):
+        try:
+            subprocess.run([sys.executable, "python/check_prediction.py"], check=True)
+            st.success("✅ Predicciones ejecutadas correctamente.")
+        except subprocess.CalledProcessError as e:
+            st.error(f"❌ Error al ejecutar predicción: {e}")
+
 with tab1:
     if not os.path.exists(file_path):
         st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")
