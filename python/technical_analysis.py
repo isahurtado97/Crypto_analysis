@@ -1,14 +1,28 @@
+
 import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import logging
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 INVESTED_MONEY = 500
 
+logging.basicConfig(filename='error_log.txt', level=logging.ERROR)
+
 def get_all_tickers():
-    res = requests.get(f"{BITVAVO_URL}/markets")
-    return [m['market'] for m in res.json()]
+    try:
+        res = requests.get(f"{BITVAVO_URL}/markets")
+        res.raise_for_status()
+        data = res.json()
+        if isinstance(data, list):
+            return [m['market'] for m in data]
+        else:
+            logging.error(f"Unexpected response from Bitvavo: {data}")
+            return []
+    except Exception as e:
+        logging.error(f"Failed to fetch tickers: {e}")
+        return []
 
 def get_1min_candles(ticker):
     res = requests.get(f"{BITVAVO_URL}/{ticker}/candles", params={"interval": "5m", "limit": 60})
