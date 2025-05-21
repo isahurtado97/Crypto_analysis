@@ -21,7 +21,7 @@ def get_candles_1m(ticker, start_dt, end_dt):
         return None
 
 def check_predictions_last_24h():
-    df = pd.read_csv("csv/tickers_ready_full.csv")
+    df = pd.read_csv("csv2/tickers_ready_full.csv")
     updated_rows = []
 
     now = datetime.utcnow()
@@ -62,7 +62,7 @@ def check_predictions_last_24h():
         updated_rows.append(row)
 
     df_checked = pd.DataFrame(updated_rows)
-    df_checked.to_csv("csv/tickers_ready_24h_checked.csv", index=False)
+    df_checked.to_csv("csv2/tickers_ready_24h_checked.csv", index=False)
     print("✅ Verificación de las últimas 24h completada: tickers_ready_24h_checked.csv")
 
 if __name__ == "__main__":

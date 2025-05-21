@@ -38,7 +38,7 @@ def get_current_price(ticker):
         return None
 
 def check_entry_conditions_with_profit():
-    file_path = "csv/directional_frequent_levels.csv"
+    file_path = "csv2/directional_frequent_levels.csv"
     if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
         print(f"🚫 El archivo {file_path} está vacío o no existe.")
         return
@@ -91,7 +91,7 @@ def check_entry_conditions_with_profit():
         print("🚫 Ninguna crypto cumple condiciones de entrada ahora mismo.")
     else:
         df_ready = pd.DataFrame(entries)
-        df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
+        df_ready.to_csv("csv2/tickers_ready_full.csv", index=False)
         print("✅ Archivo generado: tickers_ready_full.csv")
         print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "Results"]])
 

@@ -71,15 +71,15 @@ st.markdown("---")
 # --- DATA LOADERS ---
 @st.cache_data(ttl=900)
 def load_main_data():
-    return pd.read_csv("csv/tickers_ready_full.csv")
+    return pd.read_csv("csv2/tickers_ready_full.csv")
 
 @st.cache_data(ttl=900)
 def load_checked_data():
-    path = "csv/tickers_ready_24h_checked.csv"
+    path = "csv2/tickers_ready_24h_checked.csv"
     return pd.read_csv(path) if os.path.exists(path) else None
 
 # --- MAIN LOGIC ---
-file_path = "csv/tickers_ready_full.csv"
+file_path = "csv2/tickers_ready_full.csv"
 
 if not os.path.exists(file_path):
     st.info("⏳ Data is being prepared... Please wait for the first analysis or use the button above.")

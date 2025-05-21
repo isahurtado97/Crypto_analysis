@@ -119,8 +119,8 @@ def simulate_all():
     df_results = pd.DataFrame(results)
     df_skipped = pd.DataFrame(skipped, columns=["Ticker", "Reason"])
 
-    df_results.to_csv("csv/directional_frequent_levels.csv", index=False)
-    df_skipped.to_csv("csv/directional_frequent_levels_skipped.csv", index=False)
+    df_results.to_csv("csv2/directional_frequent_levels.csv", index=False)
+    df_skipped.to_csv("csv2/directional_frequent_levels_skipped.csv", index=False)
 
     print(f"✅ {len(results)} tickers procesados correctamente.")
     print(f"⚠️ {len(skipped)} tickers omitidos. Revisa 'directional_frequent_levels_skipped.csv'.")
