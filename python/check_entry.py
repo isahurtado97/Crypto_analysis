@@ -1,15 +1,14 @@
 import pandas as pd
 import requests
+import os
 from datetime import datetime
 
 BITVAVO_URL = "https://api.bitvavo.com/v2"
 LOG_FILE = "error_log.txt"
 
-
 def log_error(message):
     with open(LOG_FILE, "a") as log:
         log.write(f"{datetime.now().isoformat()} - {message}\n")
-
 
 def is_valid_market(ticker):
     try:
@@ -20,7 +19,6 @@ def is_valid_market(ticker):
     except Exception as e:
         log_error(f"Error checking market {ticker}: {e}")
         return False
-
 
 def get_current_price(ticker):
     if not is_valid_market(ticker):
@@ -39,9 +37,23 @@ def get_current_price(ticker):
         log_error(f"{ticker} – {e}")
         return None
 
-
 def check_entry_conditions_with_profit():
-    df_trades = pd.read_csv("csv/directional_frequent_levels.csv")
+    file_path = "csv/directional_frequent_levels.csv"
+    if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
+        print(f"🚫 El archivo {file_path} está vacío o no existe.")
+        return
+
+    try:
+        df_trades = pd.read_csv(file_path)
+    except Exception as e:
+        print(f"❌ Error al leer el archivo CSV: {e}")
+        log_error(f"Error al leer {file_path}: {e}")
+        return
+
+    if df_trades.empty:
+        print("🚫 El archivo no contiene datos utilizables.")
+        return
+
     entries = []
 
     for _, row in df_trades.iterrows():
@@ -54,22 +66,18 @@ def check_entry_conditions_with_profit():
         if current_price is None:
             continue
 
-        # Condición de entrada: precio actual <= entry * 1.005
         if current_price <= entry_price * 1.005:
             row_with_data = row.copy()
             row_with_data["Current Price"] = round(current_price, 8)
 
-            # Ganancia si se ejecuta el trade según simulación
             if pd.notna(exit_price):
                 row_with_data["Profit Target"] = round((exit_price - entry_price) * quantity, 2)
             else:
                 row_with_data["Profit Target"] = ""
 
-            # Ganancia o pérdida si se ejecuta ahora mismo
             unrealized_pnl = round((current_price - entry_price) * quantity, 2)
             row_with_data["Unrealized PnL"] = unrealized_pnl
 
-            # Resultado textual
             if unrealized_pnl > 0:
                 row_with_data["Results"] = "Profitable"
             elif unrealized_pnl < 0:
@@ -86,7 +94,6 @@ def check_entry_conditions_with_profit():
         df_ready.to_csv("csv/tickers_ready_full.csv", index=False)
         print("✅ Archivo generado: tickers_ready_full.csv")
         print(df_ready[["Ticker", "Entry", "Current Price", "Unrealized PnL", "Results"]])
-
 
 if __name__ == "__main__":
     check_entry_conditions_with_profit()
