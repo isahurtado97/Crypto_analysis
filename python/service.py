@@ -183,8 +183,8 @@ with tab1:
         st.markdown("---")
         st.subheader("📈 Long-Term Trading Opportunities")
         long_term = filtered_df[
-            (filtered_df["RSI_4h"] < 40) &
-            (filtered_df["MACD Trend 4h"] == "Alcista")
+            (filtered_df["RSI_4h"] < 40) #&
+            #(filtered_df["MACD Trend 4h"] == "Alcista")
         ]
         st.dataframe(long_term[cols_to_show])
 
@@ -200,8 +200,8 @@ with tab1:
         st.markdown("---")
         st.subheader("⚡ Short-Term Trading Opportunities")
         short_term = filtered_df[
-            (filtered_df["RSI_15m"] < 40) &
-            (filtered_df["MACD Trend 15m"] == "Alcista")
+            (filtered_df["RSI_15m"] < 40) #&
+            #(filtered_df["MACD Trend 15m"] == "Alcista")
         ]
         st.dataframe(short_term[cols_to_show])
 
