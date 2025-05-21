@@ -68,7 +68,7 @@ def check_entry_conditions_with_profit():
 
         try:
             df_15m = get_candles(ticker, interval="5m", limit=60)
-            df_4h = get_candles(ticker, interval="1h", limit=60)
+            df_4h = get_candles(ticker, interval="4h", limit=60)
             df_15m = compute_indicators(df_15m)
             df_4h = compute_indicators(df_4h)
             rsi_15m = df_15m["rsi"].dropna().iloc[-1]

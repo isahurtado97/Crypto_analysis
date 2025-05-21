@@ -181,12 +181,16 @@ with tab1:
 
         # --- Strategy Tables ---
         st.markdown("---")
+        cols_to_show_long = [
+            "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
+            "Volatility between entry and exit", "RSI_4h", "MACD Trend 4h", "Results"
+        ]
         st.subheader("📈 Long-Term Trading Opportunities")
         long_term = filtered_df[
             (filtered_df["RSI_4h"] < 40) #&
             #(filtered_df["MACD Trend 4h"] == "Alcista")
         ]
-        st.dataframe(long_term[cols_to_show])
+        st.dataframe(long_term[cols_to_show_long])
 
         st.markdown("### 💾 Export Long-Term Opportunities")
         long_csv = long_term.to_csv(index=False).encode('utf-8')
@@ -198,12 +202,16 @@ with tab1:
         )
 
         st.markdown("---")
+        cols_to_show_short = [
+            "Date", "Ticker", "Average Price", "Entry", "Exit", "Current Price",
+            "Volatility between entry and exit", "RSI_15m", "MACD Trend 15m", "Results"
+        ]
         st.subheader("⚡ Short-Term Trading Opportunities")
         short_term = filtered_df[
             (filtered_df["RSI_15m"] < 40) #&
             #(filtered_df["MACD Trend 15m"] == "Alcista")
         ]
-        st.dataframe(short_term[cols_to_show])
+        st.dataframe(short_term[cols_to_show_short])
 
         st.markdown("### 💾 Export Short-Term Opportunities")
         short_csv = short_term.to_csv(index=False).encode('utf-8')
