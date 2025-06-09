@@ -72,7 +72,7 @@ def simulate_all():
 
     for ticker in tickers:
         try:
-            df = get_candles(ticker, interval="5m", limit=60)
+            df = get_candles(ticker, interval="15m", limit=120)
             if len(df) < 10:
                 skipped.append((ticker, "Insufficient data"))
                 continue
